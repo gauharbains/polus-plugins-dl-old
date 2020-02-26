@@ -1,0 +1,8 @@
+opencv_python_headless==4.1.2.30
+numpy==1.18.1
+python_bioformats==1.5.2
+bfio==1.0.6
+Keras==2.1.6
+javabridge==1.0.18
+tensorflow==1.15.0
+bioformats==0.1.15

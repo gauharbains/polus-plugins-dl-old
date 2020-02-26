@@ -1,4 +1,4 @@
-FROM labshare/polus-bfio-util:1.0.7-slim-buster
+FROM labshare/polus-bfio-util:1.0.8-slim-buster
 
 COPY VERSION /
 
@@ -9,6 +9,8 @@ RUN mkdir -p ${EXEC_DIR}
 
 #Copy executable
 COPY src ${EXEC_DIR}/
+
+RUN pip install --upgrade setuptools
 
 RUN pip install -r ${EXEC_DIR}/requirements.txt --no-cache-dir
 
