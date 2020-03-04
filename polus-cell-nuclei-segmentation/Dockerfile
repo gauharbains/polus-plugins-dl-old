@@ -12,6 +12,7 @@ COPY src ${EXEC_DIR}/
 
 RUN pip install --upgrade setuptools
 
-RUN pip install -r ${EXEC_DIR}/requirements.txt --no-cache-dir
+RUN pip install -r ${EXEC_DIR}/requirements.txt --no-cache-dir && \
+    mv ${EXEC_DIR}/tensorflow_backend.py /usr/local/lib/python3.6/site-packages/keras/backend/tensorflow_backend.py -f 
 
 ENTRYPOINT [ "python3", "models.py" ]

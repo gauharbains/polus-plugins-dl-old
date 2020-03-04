@@ -21,7 +21,8 @@ np.random.seed(1)
 import random
 
 random.seed(1)
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 tf.set_random_seed(1)
 import timeit
