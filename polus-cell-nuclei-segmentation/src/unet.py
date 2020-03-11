@@ -1,3 +1,8 @@
+"""
+This script executes the 'unet' neural network. It uses the subprocess module to execute the ./src_unet/segment.py file for 
+a batch of 20 images at a time. 
+"""
+
 import argparse, subprocess, logging, time
 from pathlib import Path
 import os
