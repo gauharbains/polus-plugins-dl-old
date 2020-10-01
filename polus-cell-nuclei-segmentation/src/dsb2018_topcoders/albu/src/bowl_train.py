@@ -41,7 +41,8 @@ if args.training:
     paths = {k: os.path.join(config.dataset_path, p) for k, p in paths.items()}
 else:
     paths = {"images": config.dataset_path}
-num_workers = 0 if os.name == 'nt' else 4
+#num_workers = 0 if os.name == 'nt' else 4
+num_workers=0
 
 class MinSizeImageType(RawImageType):
     def finalyze(self, data):

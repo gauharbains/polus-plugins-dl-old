@@ -11,8 +11,6 @@ import subprocess
 import logging
 
 
-
-
 def execute_NN(main_dir): 
     """
     This function uses the subprocessing module to execute the 'Topcoders' neural network. 
@@ -29,8 +27,7 @@ def execute_NN(main_dir):
     
      # Subprocess 1
     process=subprocess.Popen("python3 bowl_eval.py ./configs/dpn_softmax_s2.json ",shell=True)
-    process.wait()  
-    
+    process.wait()      
     
      # Subprocess 2
     process=subprocess.Popen("python3 bowl_eval.py ./configs/dpn_sigmoid_s2.json ",shell=True)
@@ -38,9 +35,9 @@ def execute_NN(main_dir):
     
      # Subprocess 3
     process=subprocess.Popen("python3 bowl_eval.py ./configs/resnet_softmax_s2.json ",shell=True)
-    process.wait()  
- 
-    
+    process.wait() 
+
+
     os.chdir(main_dir+'/dsb2018_topcoders/selim/')      
      # Subprocess 4
     process=subprocess.Popen("python3 pred_test.py --gpu 0 --preprocessing_function caffe --network resnet101_2 --out_masks_folder pred_resnet101_full_masks --out_channels 2 --models_dir nn_models --models best_resnet101_2_fold0.h5 best_resnet101_2_fold1.h5 best_resnet101_2_fold2.h5 best_resnet101_2_fold3.h5 ",shell=True)
@@ -52,11 +49,12 @@ def execute_NN(main_dir):
     
      # Subprocess 6
     process=subprocess.Popen("python3 pred_test.py --gpu 0 --preprocessing_function caffe --network resnet152_2 --out_masks_folder pred_resnet152 --out_channels 2 --models best_resnet152_2_fold0.h5 best_resnet152_2_fold1.h5 best_resnet152_2_fold2.h5 best_resnet152_2_fold3.h5 ",shell=True)
-    process.wait()        
-       
+    process.wait() 
+
+
     os.chdir(main_dir+'/dsb2018_topcoders/victor/')  
     
-     # Subprocess 7
+     # Subprocess 7 
     process=subprocess.Popen("python3 predict_inception.py" ,shell=True)
     process.wait()  
     
@@ -160,8 +158,7 @@ def excecute_topcoders_workflow(input_dir, output_dir):
         delete_dir(main_dir) 
     
     # close javabridge
-       
-              
+           
     logger.info('100% complete...')    
             
             
