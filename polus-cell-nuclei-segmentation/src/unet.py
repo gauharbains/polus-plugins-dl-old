@@ -9,24 +9,17 @@ import os
 
 BATCH_SIZE = 20
 
-def main():
+def execute_unet(input_dir,output_dir):
     
     # Initialize the logger
     logging.basicConfig(format='%(asctime)s - %(name)-8s - %(levelname)-8s - %(message)s',
                         datefmt='%d-%b-%y %H:%M:%S')
     logger = logging.getLogger("main")
     logger.setLevel(logging.INFO)
+
     
-    # Parse the inputs
-    parser=argparse.ArgumentParser()
-    parser.add_argument('--inpDir',dest='input_directory',type=str,required=True)
-    parser.add_argument('--outDir',dest='output_directory',type=str,required=True)
-    args = parser.parse_args()
-    
-    # Input and output directory
-    input_dir = args.input_directory
-    logger.info("input_dir: {}".format(input_dir))
-    output_dir = args.output_directory
+    # Input and output directory    
+    logger.info("input_dir: {}".format(input_dir))    
     logger.info("output_dir: {}".format(output_dir))
     
     # Get a list of images
@@ -43,6 +36,5 @@ def main():
             time.sleep(1) # Put the main process to sleep inbetween checks, free up some processing power
     logger.info('100% complete...')
 
-if __name__ == "__main__":
-    main()
+
     

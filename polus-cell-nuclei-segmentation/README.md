@@ -2,10 +2,6 @@
 
 WIPP Plugin Title : Cell Nuclei Segmentation
 
-For more information on WIPP, visit the [official WIPP page](https://isg.nist.gov/deepzoomweb/software/wipp).
-
-For more information on Bioformats, vist the [official page](https://www.openmicroscopy.org/bio-formats/).
-
 # Background 
 
 ## Reference and credits

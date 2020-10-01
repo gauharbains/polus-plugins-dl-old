@@ -10,8 +10,6 @@ from torch import nn
 import tqdm
 from augmentations.tta import transforms as TTA
 from augmentations.transforms import ToTensor
-
-
 from dataset.neural_dataset import SequentialDataset
 from torch.utils.data.dataloader import DataLoader as PytorchDataLoader
 
@@ -83,8 +81,8 @@ def predict8tta(model, batch, sigmoid):
 
 
 def read_model(project, fold):
-    # model = nn.DataParallel(torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold))))
-    model = nn.DataParallel(  torch.load(  os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)), map_location='cpu' ))
+    model = nn.DataParallel(torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold))))
+    #model = nn.DataParallel(  torch.load(  os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)), map_location='cpu' ))
     model.eval()
     return model
 

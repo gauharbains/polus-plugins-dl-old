@@ -1,5 +1,8 @@
 import argparse
 import subprocess
+import topcoders
+import unet
+
 
 def main():
     
@@ -23,11 +26,9 @@ def main():
     
     # if else statement to execute the model chosen by the user
     if model=="unet":
-        process = subprocess.Popen("python3 unet.py --inpDir {} --outDir {}".format(input_dir,output_dir),shell=True)
-        process.wait()
+        unet.execute_unet(input_dir,output_dir)
     elif model=="topcoders":
-        process = subprocess.Popen("python3 topcoders.py --inpDir {} --outDir {}".format(input_dir,output_dir),shell=True)
-        process.wait()    
+        topcoders.excecute_topcoders_workflow(input_dir,output_dir)   
     else:
         print("Wrong Model Name")
         
