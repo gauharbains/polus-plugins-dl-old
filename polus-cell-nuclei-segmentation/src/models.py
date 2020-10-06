@@ -2,7 +2,7 @@ import argparse
 import subprocess
 import topcoders
 import unet
-
+from pathlib import Path
 
 def main():
     
@@ -20,8 +20,8 @@ def main():
     
     # store the input directory, output directory and model name
     args = parser.parse_args()    
-    input_dir = args.input_directory
-    output_dir = args.output_directory  
+    input_dir = str(Path(args.input_directory).resolve())
+    output_dir = str(Path(args.output_directory).resolve())
     model=args.model_name
     
     # if else statement to execute the model chosen by the user
