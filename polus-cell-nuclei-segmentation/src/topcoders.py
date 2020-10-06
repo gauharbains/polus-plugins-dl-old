@@ -160,8 +160,7 @@ def excecute_topcoders_workflow(input_dir, output_dir):
         #delete_dir(main_dir) 
     
     # close javabridge
-       
-              
+           
     logger.info('100% complete...')    
             
             

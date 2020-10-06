@@ -1,5 +1,5 @@
 
-https://download.pytorch.org/whl/cpu/torch-0.3.1-cp36-cp36m-linux_x86_64.whl ; sys_platform == 'linux'
+https://download.pytorch.org/whl/cu90/torch-0.3.1-cp36-cp36m-linux_x86_64.whl ; sys_platform == 'linux'
 torchvision==0.2.1
 numpy==1.18.1
 tqdm==4.41.1
