@@ -6,7 +6,8 @@ cv2.ocl.setUseOpenCL(False)
 import numpy as np
 
 from .eval import Evaluator
-
+from pathlib import Path
+from bfio import BioReader
 
 class FullImageEvaluator(Evaluator):
     def __init__(self, *args, **kwargs):
@@ -22,7 +23,9 @@ class FullImageEvaluator(Evaluator):
             path = os.path.join(self.config.dataset_path, name)
         else:
             path = os.path.join(self.config.dataset_path, 'images_all', name)
-        rows, cols = cv2.imread(path, 0).shape[:2]
+        # print(Path(path).resolve())
+        # print(cv2.imread(path, 0))
+        cols, rows = BioReader.image_size(path)
         prediction = prediction[0:rows, 0:cols,...]
         if prediction.shape[2] < 3:
             zeros = np.zeros((rows, cols), dtype=np.float32)
