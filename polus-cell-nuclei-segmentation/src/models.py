@@ -12,17 +12,20 @@ def main():
        outDir: The output directory where the plugin writes the output 
        model: The name of the model which the user wants to use"""
     
+
     # parse the inputs
     parser=argparse.ArgumentParser()
     parser.add_argument('--inpDir',dest='input_directory',type=str,required=True)
     parser.add_argument('--outDir',dest='output_directory',type=str,required=True)
     parser.add_argument('--model',dest='model_name',type=str,required=True)
     
+    
     # store the input directory, output directory and model name
     args = parser.parse_args()    
     input_dir = args.input_directory
     output_dir = args.output_directory  
     model=args.model_name
+
     
     # if else statement to execute the model chosen by the user
     if model=="unet":

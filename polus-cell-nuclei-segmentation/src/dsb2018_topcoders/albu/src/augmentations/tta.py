@@ -9,8 +9,15 @@ class TTAOp:
     def __init__(self, sigmoid=True):
         self.sigmoid = sigmoid
 
+    """
     def __call__(self, model, batch):
         forwarded = torch.autograd.Variable(torch.from_numpy(self.forward(batch.numpy())), volatile=True)
+        return self.backward(self.to_numpy(model(forwarded)))
+
+    """
+    def __call__(self, model, batch):
+
+        forwarded = torch.autograd.Variable(torch.from_numpy(self.forward(batch.numpy())), requires_grad = False).cuda()
         return self.backward(self.to_numpy(model(forwarded)))
 
     def forward(self, img):
@@ -58,7 +65,7 @@ class VFlip(BasicTTAOp):
 class Transpose(BasicTTAOp):
     @staticmethod
     def op(img):
-        return np.ascontiguousarray(img.transpose(0, 1, 3, 2))
+        return np.ascontiguousarray(np.transpose(img, (0, 1, 3, 2)))
 
 
 def chain_op(data, operations):

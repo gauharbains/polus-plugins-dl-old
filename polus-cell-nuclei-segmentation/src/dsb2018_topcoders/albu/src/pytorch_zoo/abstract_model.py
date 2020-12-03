@@ -82,7 +82,7 @@ class BasicDecoderBlock(nn.Module):
                 nn.ReLU(inplace=True)
             )
         elif upscale == Upscale.upsample_bilinear:
-            self.layer2 = nn.Upsample(scale_factor=2)
+            self.layer2 = nn.Upsample(scale_factor=2, align_corners=True)
         else:
             self.layer2 = nn.PixelShuffle(upscale_factor=2)
             last_conv_channels = middle_channels // 4
@@ -131,7 +131,7 @@ class UnetDecoderBlock(nn.Module):
     def __init__(self, in_channels, middle_channels, out_channels, upscale=Upscale.upsample_bilinear):
         super().__init__()
         self.layer = nn.Sequential(
-            nn.Upsample(scale_factor=2),
+            nn.Upsample(scale_factor=2, align_corners=True),
             nn.Conv2d(in_channels, out_channels, 3, padding=1),
             nn.ReLU(inplace=True)
         )
@@ -143,7 +143,7 @@ class UnetDoubleDecoderBlock(nn.Module):
     def __init__(self, in_channels, middle_channels, out_channels, upscale=Upscale.upsample_bilinear):
         super().__init__()
         self.layer = nn.Sequential(
-            nn.Upsample(scale_factor=2),
+            nn.Upsample(scale_factor=2, align_corners=True),
             nn.Conv2d(in_channels, in_channels, 3, padding=1),
             nn.ReLU(inplace=True),
             nn.Conv2d(in_channels, out_channels, 3, padding=1),
@@ -158,7 +158,7 @@ class UnetBNDecoderBlock(nn.Module):
     def __init__(self, in_channels, middle_channels, out_channels, upscale=Upscale.upsample_bilinear):
         super().__init__()
         self.layer = nn.Sequential(
-            nn.Upsample(scale_factor=2),
+            nn.Upsample(scale_factor=2, align_corners=True),
             nn.Conv2d(in_channels, out_channels, 3, padding=1),
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True)
@@ -303,7 +303,7 @@ def get_slice(features, start, end):
 class Aggregator(nn.Module):
     def __init__(self, in_channels, mid_channels, upsample_factor):
         super().__init__()
-        self.upsample = nn.Upsample(scale_factor=2**upsample_factor)
+        self.upsample = nn.Upsample(scale_factor=2**upsample_factor, align_corners=True)
         self.conv = nn.Conv2d(in_channels, mid_channels, 3, padding=1)
 
     def forward(self, x):

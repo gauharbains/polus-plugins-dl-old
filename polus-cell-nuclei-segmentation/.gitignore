@@ -1,1 +1,9 @@
 .DS_Store
+
+/src/dsb2018_topcoders/albu/weights
+/src/dsb2018_topcoders/selim/nn_models
+/src/dsb2018_topcoders/victor/nn_models
+/src/dsb2018_topcoders/victor/lgbm_models
+/src/dsb2018_topcoders/data/folds.csv
+
+*__pycache__

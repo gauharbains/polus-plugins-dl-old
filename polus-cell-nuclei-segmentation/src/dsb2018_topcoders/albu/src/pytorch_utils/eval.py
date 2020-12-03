@@ -80,12 +80,41 @@ def predict8tta(model, batch, sigmoid):
     return np.moveaxis(np.mean(ret, axis=0), 1, -1)
 
 
+def recursion_change_bn(module):
+    if isinstance(module, torch.nn.BatchNorm2d):
+        module.track_running_stats = 1
+    else:
+        for i, (name, module1) in enumerate(module._modules.items()):
+            module1 = recursion_change_bn(module1)
+    
+    return module
+
+def recursion_change_upsample(module):
+    if isinstance(module, torch.nn.Upsample):
+        if module.mode in ['linear', 'bilinear', 'trilinear']:
+            module.align_corners = True
+        else:
+            module.align_corners = None
+    else:
+        for i, (name, module1) in enumerate(module._modules.items()):
+            module1 = recursion_change_upsample(module1)
+    return module
+
 def read_model(project, fold):
-    model = nn.DataParallel(torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold))))
-    #model = nn.DataParallel(  torch.load(  os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)), map_location='cpu' ))
+    check_point = nn.DataParallel(torch.load(  os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)) ))
+    model = check_point
+    for i, (name, module) in enumerate(model._modules.items()):
+        module = recursion_change_bn(module)
+        module = recursion_change_upsample(module)
     model.eval()
     return model
-
+"""
+def read_model(project, fold):
+    # model = nn.DataParallel(torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold))))
+    model = nn.DataParallel(  torch.load(  os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)), map_location='cpu' ))
+    model.eval()
+    return model
+"""
 
 class Evaluator:
     def __init__(self, config, ds, test=False, flips=0, num_workers=0, border=12, val_transforms=None):
