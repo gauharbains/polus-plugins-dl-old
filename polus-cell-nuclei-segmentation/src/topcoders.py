@@ -4,11 +4,21 @@ which are used in the main() function below. Refer to the main() function to get
 the flow of the execution.
 """
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 920b82dc0c51289f4e5364f04d27b769ed0d775d
 import shutil
 import os
 import subprocess
 import logging
+<<<<<<< HEAD
 from pathlib import Path
+=======
+
+
+
+>>>>>>> 920b82dc0c51289f4e5364f04d27b769ed0d775d
 
 def execute_NN(main_dir): 
     """
@@ -87,8 +97,15 @@ def delete_dir(main_dir):
     os.makedirs(main_dir+'/dsb2018_topcoders/predictions')
     os.makedirs(main_dir+'/dsb2018_topcoders/albu/results_test')
     os.makedirs(main_dir+'/dsb2018_topcoders/data_test')    
+<<<<<<< HEAD
 
 def excecute_topcoders_workflow(input_dir, output_dir):
+=======
+
+
+def excecute_topcoders_workflow(input_dir, output_dir):     
+    
+>>>>>>> 920b82dc0c51289f4e5364f04d27b769ed0d775d
     """
     This is the main function that executes the neural network named 'topcoders' 
     The steps involved in the exectution are as follows:
@@ -139,23 +156,61 @@ def excecute_topcoders_workflow(input_dir, output_dir):
         # iterate over the minibatch and copy files to the test_data_dir
         for j in range(i,min(i+batch_size,len(filenames))):            
             filename=filenames[j]
+<<<<<<< HEAD
             
             # Use symbolic link instead of copy to reduce the amount of data being moved around
             Path(os.path.join(test_data_dir,filename)).symlink_to(os.path.join(input_dir,filename))
             
+=======
+            shutil.copy2(os.path.join(input_dir,filename),os.path.join(test_data_dir,filename)) 
+>>>>>>> 920b82dc0c51289f4e5364f04d27b769ed0d775d
         logger.info('Executing NN for files in range {:.2f} - {:.2f} ....'.format(i,j))    
         
         # execute the neural network
         execute_NN(main_dir)                 
         
+<<<<<<< HEAD
         # create and write the binary otuput
+=======
+         # create and write the binary otuput
+>>>>>>> 920b82dc0c51289f4e5364f04d27b769ed0d775d
         logger.info('Writing Outputs.....')       
         write_output = subprocess.Popen("python3 output.py --predPath {} --outDir {} --inpDir {}".format(predictions_path,output_dir, input_dir),shell=True)
         write_output.wait()
         logger.info('Deleting excess files.....')   
         
         # delete the  intermediate images created as discussed in step 5 of the function description above         
-        delete_dir(main_dir) 
+        #delete_dir(main_dir) 
     
+<<<<<<< HEAD
     logger.info('100% complete...')    
     
+=======
+    # close javabridge
+       
+              
+    logger.info('100% complete...')    
+            
+            
+
+    
+            
+        
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+
+
+
+
+    
+    
+>>>>>>> 920b82dc0c51289f4e5364f04d27b769ed0d775d

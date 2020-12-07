@@ -2,7 +2,11 @@ import argparse
 import subprocess
 import topcoders
 import unet
+<<<<<<< HEAD
 
+=======
+from pathlib import Path
+>>>>>>> 920b82dc0c51289f4e5364f04d27b769ed0d775d
 
 def main():
     
@@ -22,8 +26,8 @@ def main():
     
     # store the input directory, output directory and model name
     args = parser.parse_args()    
-    input_dir = args.input_directory
-    output_dir = args.output_directory  
+    input_dir = str(Path(args.input_directory).resolve())
+    output_dir = str(Path(args.output_directory).resolve())
     model=args.model_name
 
     
