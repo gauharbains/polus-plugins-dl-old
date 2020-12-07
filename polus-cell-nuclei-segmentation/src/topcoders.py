@@ -4,12 +4,11 @@ which are used in the main() function below. Refer to the main() function to get
 the flow of the execution.
 """
 
-
 import shutil
 import os
 import subprocess
 import logging
-
+from pathlib import Path
 
 def execute_NN(main_dir): 
     """
@@ -89,9 +88,7 @@ def delete_dir(main_dir):
     os.makedirs(main_dir+'/dsb2018_topcoders/albu/results_test')
     os.makedirs(main_dir+'/dsb2018_topcoders/data_test')    
 
-
-def excecute_topcoders_workflow(input_dir, output_dir):     
-    
+def excecute_topcoders_workflow(input_dir, output_dir):
     """
     This is the main function that executes the neural network named 'topcoders' 
     The steps involved in the exectution are as follows:
@@ -142,13 +139,16 @@ def excecute_topcoders_workflow(input_dir, output_dir):
         # iterate over the minibatch and copy files to the test_data_dir
         for j in range(i,min(i+batch_size,len(filenames))):            
             filename=filenames[j]
-            shutil.copy2(os.path.join(input_dir,filename),os.path.join(test_data_dir,filename)) 
+            
+            # Use symbolic link instead of copy to reduce the amount of data being moved around
+            Path(os.path.join(test_data_dir,filename)).symlink_to(os.path.join(input_dir,filename))
+            
         logger.info('Executing NN for files in range {:.2f} - {:.2f} ....'.format(i,j))    
         
         # execute the neural network
         execute_NN(main_dir)                 
         
-         # create and write the binary otuput
+        # create and write the binary otuput
         logger.info('Writing Outputs.....')       
         write_output = subprocess.Popen("python3 output.py --predPath {} --outDir {} --inpDir {}".format(predictions_path,output_dir, input_dir),shell=True)
         write_output.wait()
@@ -157,29 +157,5 @@ def excecute_topcoders_workflow(input_dir, output_dir):
         # delete the  intermediate images created as discussed in step 5 of the function description above         
         delete_dir(main_dir) 
     
-    # close javabridge
-           
     logger.info('100% complete...')    
-            
-            
-
-    
-            
-        
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
-
-
-
-
-    
     
