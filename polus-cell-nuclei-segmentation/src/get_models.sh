@@ -9,4 +9,4 @@ unzip dsb2018_topcoders.zip data/folds.csv -d ./dsb2018_topcoders/
 mkdir dsb2018_topcoders/data_test
 mkdir dsb2018_topcoders/predictions
 
-# rm dsb2018_topcoders.zip
+rm dsb2018_topcoders.zip

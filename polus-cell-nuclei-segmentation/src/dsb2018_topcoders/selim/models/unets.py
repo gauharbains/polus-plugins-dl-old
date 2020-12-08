@@ -7,10 +7,10 @@ from keras.utils import get_file
 from models.xception_padding import Xception
 from resnets import ResNet101, ResNet152, ResNet50
 from resnetv2 import InceptionResNetV2Same
+import os
 
 resnet_filename = 'ResNet-{}-model.keras.h5'
 resnet_resource = 'https://github.com/fizyr/keras-models/releases/download/v0.0.1/{}'.format(resnet_filename)
-
 
 def download_resnet_imagenet(v):
     v = int(v.replace('resnet', ''))
@@ -123,7 +123,7 @@ def prediction_fpn_block(x, name, upsample=None):
 def resnet152_fpn(input_shape, channels=1, activation="softmax"):
     img_input = Input(input_shape)
     resnet_base = ResNet152(img_input, include_top=True)
-    resnet_base.load_weights(download_resnet_imagenet("resnet152"))
+    resnet_base.load_weights(os.path.join(os.getcwd(), 'models', 'ResNet-152-model.keras.h5'))
     conv1 = resnet_base.get_layer("conv1_relu").output
     conv2 = resnet_base.get_layer("res2c_relu").output
     conv3 = resnet_base.get_layer("res3b7_relu").output
@@ -184,7 +184,7 @@ def resnet50_fpn(input_shape, channels=1, activation="softmax"):
 def resnet101_fpn(input_shape, channels=1, activation="softmax"):
     img_input = Input(input_shape)
     resnet_base = ResNet101(img_input, include_top=True)
-    resnet_base.load_weights(download_resnet_imagenet("resnet101"))
+    resnet_base.load_weights(os.path.join(os.getcwd(), 'models', 'ResNet-101-model.keras.h5'))
     conv1 = resnet_base.get_layer("conv1_relu").output
     conv2 = resnet_base.get_layer("res2c_relu").output
     conv3 = resnet_base.get_layer("res3b3_relu").output

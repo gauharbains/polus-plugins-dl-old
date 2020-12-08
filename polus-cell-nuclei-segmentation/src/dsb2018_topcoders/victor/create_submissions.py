@@ -13,6 +13,8 @@ import multiprocessing
 import lightgbm as lgb
 from train_classifier import get_inputs
 import pandas as pd
+import warnings
+warnings.filterwarnings("ignore", category=DeprecationWarning) 
 
 data_folder = path.join('..', 'data')
 pred_folder = path.join('..', 'predictions')
@@ -97,13 +99,9 @@ if __name__ == '__main__':
     labels= []
     labels2 = []
     separated_regions= []
-    print("hello0")
     with Pool(processes=DATA_THREADS) as pool:
         results = pool.starmap(get_inputs, paramss)
-        print(paramss)
-        print("hello1")
     for i in range(len(results)):
-        print("hello2")
         inp, lbl, inp2, lbl2, sep_regs = results[i]
         inputs.append(inp)
         inputs2.append(inp2)
@@ -112,7 +110,7 @@ if __name__ == '__main__':
         separated_regions.append(sep_regs)
 
     for sub_id in range(2):
-        print("hello3")
+        
         print('Creating submission', sub_id)
         new_test_ids = []
         rles = []

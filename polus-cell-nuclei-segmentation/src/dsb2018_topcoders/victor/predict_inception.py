@@ -41,7 +41,6 @@ if __name__ == '__main__':
     if not path.isdir(test_pred):
         mkdir(test_pred)
         
-    print('Loading models')
 
     models = []
     
@@ -50,7 +49,6 @@ if __name__ == '__main__':
         model.load_weights(path.join(models_folder, 'inception_resnet_v2_weights_{0}.h5'.format(it)))
         models.append(model)
         
-    print('Predicting test')
     for d in tqdm(listdir(test_folder)):
 
         final_mask = None
