@@ -394,6 +394,7 @@ class DPEncoderDecoder(AbstractModel):
         # Encoder
         enc_results = []
         for stage in self.encoder_stages:
+            # print(stage.__class__.__name__)
             x = stage(x)
             enc_results.append(torch.cat(x, dim=1) if isinstance(x, tuple) else x.clone())
 

@@ -5,6 +5,7 @@ import unet
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
+from pathlib import Path
 
 def main():
     
@@ -24,8 +25,8 @@ def main():
     
     # store the input directory, output directory and model name
     args = parser.parse_args()    
-    input_dir = args.input_directory
-    output_dir = args.output_directory  
+    input_dir = str(Path(args.input_directory).resolve())
+    output_dir = str(Path(args.output_directory).resolve())
     model=args.model_name
 
     
