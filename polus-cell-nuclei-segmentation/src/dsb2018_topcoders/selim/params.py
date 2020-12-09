@@ -37,5 +37,5 @@ arg('--out_root_dir', default='../predictions')
 arg('--out_masks_folder')
 arg('--models',  nargs='+')
 arg('--out_channels',  type=int, default=2)
-
+arg('--num_tiles',  type=int)
 args = parser.parse_args()

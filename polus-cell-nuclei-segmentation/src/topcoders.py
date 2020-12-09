@@ -46,15 +46,15 @@ def execute_NN(main_dir):
 
     os.chdir(main_dir+'/dsb2018_topcoders/selim/')      
      # Subprocess 4
-    process=subprocess.Popen("python3 pred_test.py --gpu 0 --preprocessing_function caffe --network resnet101_2 --out_masks_folder pred_resnet101_full_masks --out_channels 2 --models_dir nn_models --models best_resnet101_2_fold0.h5 best_resnet101_2_fold1.h5 best_resnet101_2_fold2.h5 best_resnet101_2_fold3.h5 ",shell=True)
+    process=subprocess.Popen("python3 pred_test.py --gpu 0 --num_tiles {} --preprocessing_function caffe --network resnet101_2 --out_masks_folder pred_resnet101_full_masks --out_channels 2 --models_dir nn_models --models best_resnet101_2_fold0.h5 best_resnet101_2_fold1.h5 best_resnet101_2_fold2.h5 best_resnet101_2_fold3.h5 ".format(num_tiles),shell=True)
     process.wait()
     
      # Subprocess 5
-    process=subprocess.Popen("python3 pred_test.py --gpu 0 --preprocessing_function torch --network densenet169_softmax --out_masks_folder pred_densenet169_softmax --out_channels 3 --models_dir nn_models --models best_densenet169_softmax_fold0.h5 best_densenet169_softmax_fold1.h5 best_densenet169_softmax_fold2.h5 best_densenet169_softmax_fold3.h5 ",shell=True)
+    process=subprocess.Popen("python3 pred_test.py --gpu 0 --num_tiles {} --preprocessing_function torch --network densenet169_softmax --out_masks_folder pred_densenet169_softmax --out_channels 3 --models_dir nn_models --models best_densenet169_softmax_fold0.h5 best_densenet169_softmax_fold1.h5 best_densenet169_softmax_fold2.h5 best_densenet169_softmax_fold3.h5 ".format(num_tiles),shell=True)
     process.wait()
     
      # Subprocess 6
-    process=subprocess.Popen("python3 pred_test.py --gpu 0 --preprocessing_function caffe --network resnet152_2 --out_masks_folder pred_resnet152 --out_channels 2 --models best_resnet152_2_fold0.h5 best_resnet152_2_fold1.h5 best_resnet152_2_fold2.h5 best_resnet152_2_fold3.h5 ",shell=True)
+    process=subprocess.Popen("python3 pred_test.py --gpu 0 --num_tiles {} --preprocessing_function caffe --network resnet152_2 --out_masks_folder pred_resnet152 --out_channels 2 --models best_resnet152_2_fold0.h5 best_resnet152_2_fold1.h5 best_resnet152_2_fold2.h5 best_resnet152_2_fold3.h5 ".format(num_tiles),shell=True)
     process.wait() 
 
 
@@ -155,7 +155,7 @@ def excecute_topcoders_workflow(input_dir, output_dir):
         # execute the neural network
         execute_NN(main_dir)                 
         
-        # create and write the binary otuput
+        # create and write the binary output
         logger.info('Writing Outputs.....')       
         write_output = subprocess.Popen("python3 output.py --predPath {} --outDir {} --inpDir {}".format(predictions_path,output_dir, input_dir),shell=True)
         write_output.wait()
