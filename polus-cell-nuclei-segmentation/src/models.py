@@ -2,11 +2,10 @@ import argparse
 import subprocess
 import topcoders
 import unet
-<<<<<<< HEAD
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
-=======
 from pathlib import Path
->>>>>>> 920b82dc0c51289f4e5364f04d27b769ed0d775d
 
 def main():
     

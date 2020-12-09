@@ -12,7 +12,8 @@ from augmentations.tta import transforms as TTA
 from augmentations.transforms import ToTensor
 from dataset.neural_dataset import SequentialDataset
 from torch.utils.data.dataloader import DataLoader as PytorchDataLoader
-from multiprocessing import cpu_count
+import warnings
+warnings.filterwarnings("ignore")
 
 
 class flip:
@@ -43,7 +44,10 @@ def to_numpy(batch):
 
 
 def predict(model, batch, flips=flip.FLIP_NONE):
-    batch = torch.autograd.Variable(batch, volatile=True).cuda()
+    if torch.cuda.is_available():   
+        batch = torch.autograd.Variable(batch, volatile=True).cuda()
+    else:
+        batch = torch.autograd.Variable(batch, volatile=True)
     pred1 = model(batch)
     if flips > flip.FLIP_NONE:
         pred2 = flip_tensor_lr(model(flip_tensor_lr(batch)))
@@ -102,22 +106,17 @@ def recursion_change_upsample(module):
     return module
 
 def read_model(project, fold):
-    check_point = nn.DataParallel(torch.load(  os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)) ))
+
+    if torch.cuda.is_available():
+        check_point = nn.DataParallel(torch.load(  os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold))))
+    else:
+        check_point = nn.DataParallel(torch.load(  os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)), map_location='cpu'))
     model = check_point
     for i, (name, module) in enumerate(model._modules.items()):
         module = recursion_change_bn(module)
         module = recursion_change_upsample(module)
     model.eval()
     return model
-"""
-def read_model(project, fold):
-    # model = nn.DataParallel(torch.load(os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold))))
-    # torch.set_num_threads(cpu_count())
-    # print(torch.get_num_threads())
-    model = nn.DataParallel(  torch.load(  os.path.join('..', 'weights', project, 'fold{}_best.pth'.format(fold)), map_location='cpu' ))
-    model.eval()
-    return model
-"""
 
 class Evaluator:
     def __init__(self, config, ds, test=False, flips=0, num_workers=0, border=12, val_transforms=None):

@@ -2,7 +2,6 @@
 import os
 import logging
 
-print("hello welcome 59845")
 from params import args
 
 os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
@@ -43,7 +42,7 @@ def preprocess_inputs(x):
 
 if __name__ == '__main__':
 
-    print("hello welcome 121212121")
+    
     logging.basicConfig(format='%(asctime)s - %(name)-8s - %(levelname)-8s - %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
     logger = logging.getLogger("main")

@@ -3,21 +3,20 @@ import cv2
 import os
 import torch
 from torch.nn import functional as F
+import warnings
+warnings.filterwarnings("ignore")
 
 
 class TTAOp:
     def __init__(self, sigmoid=True):
         self.sigmoid = sigmoid
 
-    """
     def __call__(self, model, batch):
-        forwarded = torch.autograd.Variable(torch.from_numpy(self.forward(batch.numpy())), volatile=True)
-        return self.backward(self.to_numpy(model(forwarded)))
-
-    """
-    def __call__(self, model, batch):
-
-        forwarded = torch.autograd.Variable(torch.from_numpy(self.forward(batch.numpy())), requires_grad = False).cuda()
+        
+        if torch.cuda.is_available():
+            forwarded = torch.autograd.Variable(torch.from_numpy(self.forward(batch.numpy())), requires_grad = False).cuda()
+        else:
+            forwarded = torch.autograd.Variable(torch.from_numpy(self.forward(batch.numpy())), requires_grad = False)
         return self.backward(self.to_numpy(model(forwarded)))
 
     def forward(self, img):

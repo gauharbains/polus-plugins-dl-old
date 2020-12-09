@@ -8,17 +8,21 @@ from utils import get_csv_folds, update_config, get_folds
 from config import Config
 from dataset.reading_image_provider import ReadingImageProvider, CachingImageProvider, InFolderImageProvider
 from dataset.raw_image import RawImageType
-from pytorch_utils.concrete_eval import FullImageEvaluator
+from pytorch_utils.concrete_eval import FullImageEvaluator, TiledImageEvaluator
 from augmentations.transforms import aug_victor
 from pytorch_utils.train import train
 from merge_preds import merge_files
 import json
+
+import torch
 
 import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('config_path')
 parser.add_argument('--fold', type=int)
 parser.add_argument('--training', action='store_true')
+parser.add_argument('--device', type=int, required=False)
+parser.add_argument('--num_tiles', type=int, required=False)
 args = parser.parse_args()
 with open(args.config_path, 'r') as f:
     cfg = json.load(f)
@@ -36,6 +40,8 @@ fn_mapping = {
     'labels': lambda name: os.path.splitext(name)[0] + '.tif'
 }
 
+device = args.device
+num_tiles = args.num_tiles
 
 if args.training:
     paths = {k: os.path.join(config.dataset_path, p) for k, p in paths.items()}
@@ -97,6 +103,7 @@ def train_bowl():
 
 
 def eval_bowl():
+    
     global config
     test = not args.training
     im_val_type = PaddedImageType if not config.sigmoid else PaddedSigmoidImageType
@@ -107,11 +114,12 @@ def eval_bowl():
     else:
         folds = [([], list(range(len(ds)))) for i in range(4)]
 
-    keval = FullImageEvaluator(config, ds, test=test, flips=3, num_workers=num_workers, border=0)
+    # keval = FullImageEvaluator(config, ds, test=test, flips=3, num_workers=num_workers, border=0)
+    keval = TiledImageEvaluator(config, ds, test=test, flips=3, num_workers=num_workers, border=0)
     for fold, (t, e) in enumerate(folds):
         if args.fold is not None and int(args.fold) != fold:
             continue
-        keval.predict(fold, e)
+        keval.predict(fold, e, device, num_tiles)
     if test and args.fold is None:
         merge_files(keval.save_dir)
 

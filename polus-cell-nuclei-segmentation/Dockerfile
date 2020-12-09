@@ -14,4 +14,8 @@ RUN pip install --upgrade setuptools && \
     pip install -r ${EXEC_DIR}/requirements.txt --no-cache-dir && \
     mv ${EXEC_DIR}/tensorflow_backend.py /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py -f 
 
+RUN sh get_models.sh && \
+    python get_resnet_weights.py
+
+
 ENTRYPOINT [ "python3", "models.py" ]
