@@ -61,11 +61,11 @@ def execute_NN(main_dir):
     os.chdir(main_dir+'/dsb2018_topcoders/victor/')  
     
      # Subprocess 7 
-    process=subprocess.Popen("python3 predict_inception.py" ,shell=True)
+    process=subprocess.Popen("python3 predict_inception.py --num_tiles {} --device {}".format(num_tiles, device) ,shell=True)
     process.wait()  
     
      # Subprocess 8
-    process=subprocess.Popen("python3 predict_densenet.py",shell=True)
+    process=subprocess.Popen("python3 predict_densenet.py --num_tiles {} --device {}".format(num_tiles, device),shell=True)
     process.wait()  
 
      # Subprocess 9
