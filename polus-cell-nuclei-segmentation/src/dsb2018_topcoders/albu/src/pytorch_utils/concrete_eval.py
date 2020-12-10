@@ -70,11 +70,6 @@ class TiledImageEvaluator(FullImageEvaluator):
             X_TILE_SIZE *= f[1]
             Y_TILE_SIZE *= f[0]
         
-        print(num_tiles)
-        print(f)
-        print("X_TILE_SIZE: {}".format(X_TILE_SIZE))
-        print("Y_TILE_SIZE: {}".format(Y_TILE_SIZE))
-        
         prefix = ('fold' + str(fold) + "_") if self.test else ""
         val_dataset = SequentialDataset(self.ds, val_indexes, stage='test', config=self.config, transforms=self.val_transforms)
         val_dl = PytorchDataLoader(val_dataset, batch_size=self.config.predict_batch_size, num_workers=self.num_workers, drop_last=False)

@@ -10,6 +10,8 @@ tf.set_random_seed(1)
 import timeit
 import cv2
 from tqdm import tqdm
+import warnings
+warnings.filterwarnings("ignore")
 
 pred_folders = [
         ('dpn_softmax_f0', 'dpn_softmax_f0_test', 1),

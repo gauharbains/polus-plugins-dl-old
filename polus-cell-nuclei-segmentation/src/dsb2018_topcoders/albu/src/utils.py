@@ -53,12 +53,12 @@ def get_config():
     args = parser.parse_args()
     with open(args.config_path, 'r') as f:
         config = json.load(f)
-        print(config)
+        #print(config)
     config['fold'] = args.fold
     return Config(**config)
 
 def update_config(config, **kwargs):
     d = config._asdict()
     d.update(**kwargs)
-    print(d)
+    #print(d)
     return Config(**d)

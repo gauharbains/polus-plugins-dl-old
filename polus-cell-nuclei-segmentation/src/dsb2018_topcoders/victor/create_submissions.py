@@ -92,7 +92,7 @@ if __name__ == '__main__':
         if path.isfile(path.join(test_pred_folder, f)) :
             img_id = f.split('.')[0]
             paramss.append((f, test_pred_folder, path.join(test_images_folder, img_id), None, extend_mask_test))
-    print(paramss)
+    #print(paramss)
     
     inputs = []
     inputs2 = []
@@ -111,7 +111,7 @@ if __name__ == '__main__':
 
     for sub_id in range(2):
         
-        print('Creating submission', sub_id)
+        #print('Creating submission', sub_id)
         new_test_ids = []
         rles = []
     
@@ -203,8 +203,8 @@ if __name__ == '__main__':
         sub['EncodedPixels'] = pd.Series(rles).apply(lambda x: ' '.join(str(y) for y in x))
         sub.to_csv(path.join(pred_folder, 'submission_{0}.csv'.format(sub_id)), index=False)
     
-        print('total_cnt', total_cnt, 'removed', removed, 'replaced', replaced, 'empty:', empty_cnt)
-        print(bst_k)
+        #print('total_cnt', total_cnt, 'removed', removed, 'replaced', replaced, 'empty:', empty_cnt)
+        #print(bst_k)
     
     elapsed = timeit.default_timer() - t0
     print('Time: {:.3f} min'.format(elapsed / 60))

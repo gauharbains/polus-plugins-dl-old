@@ -50,7 +50,7 @@ def create_and_write_output(predictions_path,output_path,inpDir):
         
         # read and store the metadata from the input image
         bf = bfio.BioReader(os.path.join(inpDir,filename))
-        meta_data=bf.read_metadata()
+        meta_data=bf.metadata()
         
         # Write the binary output consisting of the metadata using bfio.
         output_image_5channel=np.zeros((out_image.shape[0],out_image.shape[1],1,1,1),dtype='uint8')
