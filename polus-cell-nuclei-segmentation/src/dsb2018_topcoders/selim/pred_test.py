@@ -28,6 +28,7 @@ import timeit
 import cv2
 from tqdm import tqdm    
 
+
 test_folder = args.test_folder
 test_pred = os.path.join(args.out_root_dir, args.out_masks_folder)
 
@@ -69,38 +70,38 @@ if __name__ == '__main__':
     os.makedirs(test_pred, exist_ok=True)
     #print('Predicting test')
     for d in tqdm(listdir(test_folder)):
-        logger.info("Prediction Image: {}".format(d))
+        logger.info("Predicting Image: {}".format(d))
+        fid = d
+        full_img = cv2.imread(path.join(test_folder, fid), cv2.IMREAD_COLOR)[...,::-1]
 
-        for scale in range(1):
-            fid = d
-            full_img = cv2.imread(path.join(test_folder, fid), cv2.IMREAD_COLOR)[...,::-1]
-
-            if num_tiles == None:
-                num_tiles = 1
-            
+        if num_tiles == None:
+            num_tiles = 1
+        
+        f = factors(num_tiles)
+        X_TILE_SIZE = 512 * f[1]
+        Y_TILE_SIZE = 512 * f[0]
+        device=0
+        if device != None:
+            num_tiles = 0
+            tries = 0
+                
             f = factors(num_tiles)
-            X_TILE_SIZE = 512 * f[1]
-            Y_TILE_SIZE = 512 * f[0]
-            device=0
-            if device != None:
-                num_tiles = 0
-                tries = 0
-                    
-                f = factors(num_tiles)
-                
-                X_TILE_SIZE *= f[1]
-                Y_TILE_SIZE *= f[0]
-
-            predicted = np.zeros((full_img.shape[0], full_img.shape[1], 3), dtype='uint8')
             
-            for x in range(0,full_img.shape[0],X_TILE_SIZE):
-                x_max = min([full_img.shape[0],x+X_TILE_SIZE])
-                
-                for y in range(0,full_img.shape[1],Y_TILE_SIZE):
-                    y_max = min([full_img.shape[1],y+Y_TILE_SIZE])
-                    final_mask = None
-                    img = full_img[x:x_max, y:y_max, :]
+            X_TILE_SIZE *= f[1]
+            Y_TILE_SIZE *= f[0]
 
+        predicted = np.zeros((full_img.shape[0], full_img.shape[1], 3), dtype='uint8')
+        
+        for x in range(0,full_img.shape[0],X_TILE_SIZE):
+            x_max = min([full_img.shape[0],x+X_TILE_SIZE])
+            
+            for y in range(0,full_img.shape[1],Y_TILE_SIZE):
+                y_max = min([full_img.shape[1],y+Y_TILE_SIZE])
+                final_mask = None
+                for scale in range(1):
+
+                    img = full_img[x:x_max, y:y_max, :]
+ 
                     if final_mask is None:
                         final_mask = np.zeros((img.shape[0], img.shape[1], OUT_CHANNELS))
                     if scale == 1:

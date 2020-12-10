@@ -39,7 +39,7 @@ def execute_NN(main_dir):
     process.wait()  
     
      # Subprocess 3
-    num_tiles = int(mem_free // (1 * 2 ** 30) - 1)
+    #num_tiles = int(mem_free // (1 * 2 ** 30) - 1)
     process=subprocess.Popen(root + " ./configs/resnet_softmax_s2.json --num_tiles {} --device {}".format(num_tiles,device),shell=True)
     process.wait() 
 
