@@ -1,4 +1,4 @@
-FROM labshare/polus-bfio-util:1.0.8-tensorflow
+FROM labshare/polus-bfio-util:2.0.2-tensorflow
 
 COPY VERSION /
 
@@ -14,8 +14,9 @@ RUN pip install --upgrade setuptools && \
     pip install -r ${EXEC_DIR}/requirements.txt --no-cache-dir && \
     mv ${EXEC_DIR}/tensorflow_backend.py /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py -f 
 
-RUN sh get_models.sh && \
+RUN cd /opt/executables && \
+    sh get_models.sh && \
     python get_resnet_weights.py
 
-
+WORKDIR /opt/executables
 ENTRYPOINT [ "python3", "models.py" ]

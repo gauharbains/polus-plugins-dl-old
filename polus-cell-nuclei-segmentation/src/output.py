@@ -3,8 +3,6 @@ import os
 import bfio
 import numpy as np
 import argparse
-import javabridge
-import bioformats
 import logging
 
 def create_binary(image):    
@@ -50,14 +48,14 @@ def create_and_write_output(predictions_path,output_path,inpDir):
         
         # read and store the metadata from the input image
         bf = bfio.BioReader(os.path.join(inpDir,filename))
-        meta_data=bf.metadata()
+        meta_data=bf.metadata
         
         # Write the binary output consisting of the metadata using bfio.
         output_image_5channel=np.zeros((out_image.shape[0],out_image.shape[1],1,1,1),dtype='uint8')
         output_image_5channel[:,:,0,0,0]=out_image         
         bw = bfio.BioWriter(os.path.join(output_path,filename), metadata=meta_data)
-        bw.write_image(output_image_5channel)
-        bw.close_image()   
+        bw.write(output_image_5channel)
+        bw.close()   
         
 
 if __name__ == "__main__":
@@ -80,14 +78,9 @@ if __name__ == "__main__":
     output_dir = args.output_directory  
     predictions_path=args.predictions_path
     
-    logger.info('Starting Javabrdige...')
-    javabridge.start_vm(class_path=bioformats.JARS)
-    
     logger.info('writing outputs...')    
     create_and_write_output(predictions_path,output_dir,input_dir)
     
-    logger.info('closing javabridge')
-    javabridge.kill_vm() 
     
     
     

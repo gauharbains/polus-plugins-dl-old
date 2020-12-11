@@ -10,9 +10,6 @@ import timeit
 import cv2
 from models import get_densenet121_unet_softmax
 from tqdm import tqdm
-import bioformats
-import javabridge
-import bfio
 import argparse, logging
 
 test_folder = path.join('..', 'data_test')
@@ -38,14 +35,14 @@ def bgr_to_lab(img):
         lab = 255 - lab
     return lab[..., np.newaxis]
 
-def load_image(path):
-    bf = bfio.BioReader(path)    
-    image = bf.read_image()
-    image=image[:,:,0,:,0]
-    if image.shape[2] == 3:
-        return image
-    elif image.shape[2]==1:
-        return np.dstack((image[:,:,0], image[:,:,0],image[:,:,0]))
+#def load_image(path):
+#    bf = bfio.BioReader(path)    
+#    image = bf.read_image()
+#    image=image[:,:,0,:,0]
+#    if image.shape[2] == 3:
+#        return image
+#    elif image.shape[2]==1:
+#        return np.dstack((image[:,:,0], image[:,:,0],image[:,:,0]))
 
 def factors(n):
     # Modified from https://stackoverflow.com/a/6909532
