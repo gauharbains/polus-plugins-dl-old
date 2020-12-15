@@ -25,12 +25,18 @@ def execute_NN(main_dir):
    
     os.chdir(main_dir+'/dsb2018_topcoders/albu/src/')
     
-    mem_free, mem_total = cupy.cuda.Device(0).mem_info
+    try:   
+       mem_free, mem_total = cupy.cuda.Device(0).mem_info
+       num_tiles = int(mem_free // (1.5 * 2 ** 30) - 1)
+       device = 0
+    except:
+       device = -1
+       num_tiles = 1
+
     root = "python3 bowl_eval.py"
     
     # Subprocess 1
-    num_tiles = int(mem_free // (1.5 * 2 ** 30) - 1)
-    device = 0
+
     process=subprocess.Popen(root + " ./configs/dpn_softmax_s2.json --num_tiles {} --device {}".format(num_tiles,device),shell=True)
     process.wait()      
     
@@ -61,11 +67,11 @@ def execute_NN(main_dir):
     os.chdir(main_dir+'/dsb2018_topcoders/victor/')  
     
      # Subprocess 7 
-    process=subprocess.Popen("python3 predict_inception.py --num_tiles {} --device {}".format(num_tiles, device) ,shell=True)
+    process=subprocess.Popen("python3 predict_inception.py --num_tiles {} ".format(num_tiles) ,shell=True)
     process.wait()  
     
      # Subprocess 8
-    process=subprocess.Popen("python3 predict_densenet.py --num_tiles {} --device {}".format(num_tiles, device),shell=True)
+    process=subprocess.Popen("python3 predict_densenet.py --num_tiles {} ".format(num_tiles),shell=True)
     process.wait()  
 
      # Subprocess 9

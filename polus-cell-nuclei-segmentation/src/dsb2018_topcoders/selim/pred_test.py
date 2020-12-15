@@ -80,15 +80,6 @@ if __name__ == '__main__':
         f = factors(num_tiles)
         X_TILE_SIZE = 512 * f[1]
         Y_TILE_SIZE = 512 * f[0]
-        device=0
-        if device != None:
-            num_tiles = 0
-            tries = 0
-                
-            f = factors(num_tiles)
-            
-            X_TILE_SIZE *= f[1]
-            Y_TILE_SIZE *= f[0]
 
         predicted = np.zeros((full_img.shape[0], full_img.shape[1], 3), dtype='uint8')
         

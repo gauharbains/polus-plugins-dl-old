@@ -61,14 +61,6 @@ class TiledImageEvaluator(FullImageEvaluator):
         f = factors(num_tiles)
         X_TILE_SIZE = 512 * f[1]
         Y_TILE_SIZE = 512 * f[0]
-        if device != None:
-            num_tiles = 0
-            tries = 0
-                
-            f = factors(num_tiles)
-            
-            X_TILE_SIZE *= f[1]
-            Y_TILE_SIZE *= f[0]
         
         prefix = ('fold' + str(fold) + "_") if self.test else ""
         val_dataset = SequentialDataset(self.ds, val_indexes, stage='test', config=self.config, transforms=self.val_transforms)
