@@ -1,4 +1,4 @@
-FROM labshare/polus-bfio-util:2.0.2-tensorflow
+FROM labshare/polus-bfio-util:1.0.8-tensorflow
 
 COPY VERSION /
 
@@ -18,5 +18,4 @@ RUN cd /opt/executables && \
     sh get_models.sh && \
     python get_resnet_weights.py
 
-WORKDIR /opt/executables
 ENTRYPOINT [ "python3", "models.py" ]

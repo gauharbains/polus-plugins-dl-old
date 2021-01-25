@@ -1,9 +1,11 @@
 import cv2 
 import os 
-import bfio
 import numpy as np
 import argparse
 import logging
+import javabridge
+import bioformats
+from bfio import BioReader, BioWriter
 
 def create_binary(image):    
     
@@ -47,15 +49,15 @@ def create_and_write_output(predictions_path,output_path,inpDir):
         out_image=create_binary(image)   
         
         # read and store the metadata from the input image
-        bf = bfio.BioReader(os.path.join(inpDir,filename))
-        meta_data=bf.metadata
+        bf = BioReader(os.path.join(inpDir,filename))
+        meta_data=bf.read_metadata()
         
         # Write the binary output consisting of the metadata using bfio.
         output_image_5channel=np.zeros((out_image.shape[0],out_image.shape[1],1,1,1),dtype='uint8')
         output_image_5channel[:,:,0,0,0]=out_image         
-        bw = bfio.BioWriter(os.path.join(output_path,filename), metadata=meta_data)
-        bw.write(output_image_5channel)
-        bw.close()   
+        bw = BioWriter(os.path.join(output_path,filename), metadata=meta_data)
+        bw.write_image(output_image_5channel)
+        bw.close_image()   
         
 
 if __name__ == "__main__":
@@ -71,15 +73,19 @@ if __name__ == "__main__":
     parser.add_argument('--predPath',dest='predictions_path',type=str,required=True)
     parser.add_argument('--outDir',dest='output_directory',type=str,required=True)
     parser.add_argument('--inpDir',dest='input_directory',type=str,required=True)
-    
-    # store the inputs
-    args = parser.parse_args()    
-    input_dir = args.input_directory
-    output_dir = args.output_directory  
-    predictions_path=args.predictions_path
-    
-    logger.info('writing outputs...')    
-    create_and_write_output(predictions_path,output_dir,input_dir)
+    # Start the javabridge
+    try:
+        javabridge.start_vm(class_path=bioformats.JARS)
+        # store the inputs
+        args = parser.parse_args()    
+        input_dir = args.input_directory
+        output_dir = args.output_directory  
+        predictions_path=args.predictions_path
+        
+        logger.info('writing outputs...')    
+        create_and_write_output(predictions_path,output_dir,input_dir)
+    finally:
+        javabridge.kill_vm()
     
     
     
