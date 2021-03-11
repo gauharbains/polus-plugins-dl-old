@@ -9,7 +9,7 @@ import os
 import subprocess
 import logging
 from pathlib import Path
-import cupy
+
 
 def execute_NN(main_dir): 
     """
@@ -26,6 +26,7 @@ def execute_NN(main_dir):
     os.chdir(main_dir+'/dsb2018_topcoders/albu/src/')
     
     try:   
+       import cupy
        mem_free, mem_total = cupy.cuda.Device(0).mem_info
        num_tiles = int(mem_free // (1.5 * 2 ** 30) - 1)
        device = 0

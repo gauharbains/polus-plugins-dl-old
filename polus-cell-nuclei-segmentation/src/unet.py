@@ -30,7 +30,6 @@ def execute_unet(input_dir,output_dir):
     for ind in range(0,len(files),BATCH_SIZE):
         logger.info('{:.2f}% complete...'.format(100*ind/len(files)))
         batch = ','.join(files[ind:min([ind+BATCH_SIZE,len(files)])])
-        
         process = subprocess.Popen("python3 segment.py --batch {} --outDir {}".format(batch,output_dir),shell=True)
         while process.poll() == None:
             time.sleep(1) # Put the main process to sleep inbetween checks, free up some processing power
