@@ -197,7 +197,7 @@ if __name__=='__main__':
             
             # The network expects the pixel values to be in the range of (0,1).
             # Interpolate the pixel values to (0,1)
-            img=np.interp(img, (img.min(), img.max()), (0,1))
+            img=np.interp(img, (np.percentile(img,1), np.percentile(img,99)), (0,1))
             
             # The network expects a 3 channel image.    
             img=np.dstack((img,img,img))
