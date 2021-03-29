@@ -244,6 +244,7 @@ if __name__=='__main__':
             # Export the output to the desired directory
             bw = bfio.BioWriter(str(Path(output_dir).joinpath(Path(filename).name).absolute()),
                             metadata=bf.read_metadata() )
+            bw.pixel_type(dtype='uint8')
             bw.write_image(output_image_5channel)
             bw.close_image()  
             
