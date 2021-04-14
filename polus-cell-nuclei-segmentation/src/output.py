@@ -3,8 +3,6 @@ import os
 import numpy as np
 import argparse
 import logging
-import javabridge
-import bioformats
 from bfio import BioReader, BioWriter
 
 def create_binary(image):    
@@ -49,15 +47,17 @@ def create_and_write_output(predictions_path,output_path,inpDir):
         out_image=create_binary(image)   
         
         # read and store the metadata from the input image
-        bf = BioReader(os.path.join(inpDir,filename))
-        meta_data=bf.read_metadata()
-        
+        with BioReader(os.path.join(inpDir,filename)) as br:
+            metadata = br.metadata
+
         # Write the binary output consisting of the metadata using bfio.
-        output_image_5channel=np.zeros((out_image.shape[0],out_image.shape[1],1,1,1),dtype='uint8')
-        output_image_5channel[:,:,0,0,0]=out_image         
-        bw = BioWriter(os.path.join(output_path,filename), metadata=meta_data)
-        bw.write_image(output_image_5channel)
-        bw.close_image()   
+        output_image_5channel=np.zeros((out_image.shape[0],out_image.shape[1],1,1,1),dtype=np.uint8)
+        output_image_5channel[:,:,0,0,0]=out_image   
+
+        with BioWriter(os.path.join(output_path,filename), metadata=metadata) as bw:
+            bw.dtype = output_image_5channel.dtype
+            bw.write(output_image_5channel)
+ 
         
 
 if __name__ == "__main__":
@@ -73,9 +73,9 @@ if __name__ == "__main__":
     parser.add_argument('--predPath',dest='predictions_path',type=str,required=True)
     parser.add_argument('--outDir',dest='output_directory',type=str,required=True)
     parser.add_argument('--inpDir',dest='input_directory',type=str,required=True)
-    # Start the javabridge
+
     try:
-        javabridge.start_vm(class_path=bioformats.JARS)
+        
         # store the inputs
         args = parser.parse_args()    
         input_dir = args.input_directory
@@ -85,7 +85,8 @@ if __name__ == "__main__":
         logger.info('writing outputs...')    
         create_and_write_output(predictions_path,output_dir,input_dir)
     finally:
-        javabridge.kill_vm()
+        logger.info('Batch complete...') 
+        
     
     
     

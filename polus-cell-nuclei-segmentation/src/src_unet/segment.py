@@ -3,9 +3,7 @@ import sys
 import argparse
 import os
 import math
-import bfio
-import javabridge as jutil
-import bioformats 
+from bfio import BioReader, BioWriter
 import logging
 from pathlib import Path
 import traceback
@@ -36,7 +34,7 @@ session = InteractiveSession(config=config)
 import cv2
 sys.stderr = stderr
 
-
+tile_size = 1024
 
 def unet(in_shape=(256,256,3), alpha=0.1, dropout=None):
 
@@ -174,12 +172,7 @@ if __name__=='__main__':
         # Input and output directory
         batch = args.batch.split(',')
         output_dir = args.output_directory
-        
-        # Start the javabridge with proper java logging
-        log_config = Path(__file__).parent.joinpath("log4j.properties")
-        logger.info(" Starting Javabridge....") 
-        jutil.start_vm(args=["-Dlog4j.configuration=file:{}".format(str(log_config.absolute()))],class_path=bioformats.JARS)
-        
+ 
         # Load Model Architecture and model weights
         model=unet()
         model.load_weights('unet.h5')
@@ -189,72 +182,79 @@ if __name__=='__main__':
             logger.info("Processing image: {}".format(filename))  
             
             # Use bfio to read the image
-            bf = bfio.BioReader(filename)
-            img = bf.read_image()
+            with BioReader(filename) as br:
+                with BioWriter(str(Path(output_dir).joinpath(Path(filename).name).absolute()),
+                            metadata=br.metadata) as bw:
+
+                    bw.dtype = np.uint8
+
+                    for x in range(0,br.X, tile_size):
+                        x_max = min([br.X,x+tile_size])
+
+                        for y in range(0,br.Y,tile_size):
+                            y_max = min([br.Y,y+tile_size])
+
+                            img = br[y:y_max,x:x_max,0:1,0,0]
+                
+                            # Extract the 2-D grayscale image. Bfio loads an image as a 5-D array.
+                            img=img[:,:,0,0,0]
+                            
+                            # The network expects the pixel values to be in the range of (0,1).
+                            # Interpolate the pixel values to (0,1)
+                            img=np.interp(img, (np.percentile(img,1), np.percentile(img,99)), (0,1))
+                            
+                            # The network expects a 3 channel image.    
+                            img=np.dstack((img,img,img))
+                            
+                            # Add reflective padding to make the image dimensions a multiple of 256
+                            
+                            # pad_dimensions will help us extract the final result from the padded output.
+                            padded_img,pad_dimensions=padding(img)
+                            
+                            # Intitialize an emtpy array to store the output from the network        
+                            final_img=np.zeros((padded_img.shape[0],padded_img.shape[1]))
+                            
+                            # Extract 256 x 256 tiles from the padded input image. 
+                            for i in range(int(padded_img.shape[0]/256)):
+                                for j in range(int(padded_img.shape[1]/256)):
+                                    
+                                    # tile to be processed 
+                                    temp_img=padded_img[i*256:(i+1)*256,j*256:(j+1)*256]                
+                                    inp = np.expand_dims(temp_img, axis=0) 
+                                    
+                                    #predict
+                                    out=model.predict(inp)
+                                    
+                                    # Extract the output image
+                                    out=out[0,:,:,0] 
+                                    
+                                    # Store the output tile 
+                                    final_img[i*256:(i+1)*256,j*256:(j+1)*256]=out 
+                                    
+                            # get pad dimensions on all 4 sides of the image        
+                            top_pad,bottom_pad,left_pad,right_pad=pad_dimensions
+                            
+                            # Extract the Desired output from the padded output
+                            out_image=final_img[top_pad:final_img.shape[0]-bottom_pad,left_pad:final_img.shape[1]-right_pad]
+                            
+                            # Form a binary image
+                            out_image=np.rint(out_image)*255 
+                            out_image = out_image.astype(np.uint8)    
+                            
+                            # Convert the output to a 5-D arrray to enable bfio to write the image.
+                            output_image_5channel=np.zeros((out_image.shape[0],out_image.shape[1],1,1,1),dtype=np.uint8)
+                            output_image_5channel[:,:,0,0,0]=out_image
+
+                            bw[y:y_max,x:x_max,0:1,0,0] = output_image_5channel
             
-            # Extract the 2-D grayscale image. Bfio loads an image as a 5-D array.
-            img=(img[:,:,0,0,0])
-            
-            # The network expects the pixel values to be in the range of (0,1).
-            # Interpolate the pixel values to (0,1)
-            img=np.interp(img, (np.percentile(img,1), np.percentile(img,99)), (0,1))
-            
-            # The network expects a 3 channel image.    
-            img=np.dstack((img,img,img))
-            
-            # Add reflective padding to make the image dimensions a multiple of 256
-            
-            # pad_dimensions will help us extract the final result from the padded output.
-            padded_img,pad_dimensions=padding(img)
-            
-            # Intitialize an emtpy array to store the output from the network        
-            final_img=np.zeros((padded_img.shape[0],padded_img.shape[1]))
-            
-            # Extract 256 x 256 tiles from the padded input image. 
-            for i in range(int(padded_img.shape[0]/256)):
-                for j in range(int(padded_img.shape[1]/256)):
-                    
-                    # tile to be processed 
-                    temp_img=padded_img[i*256:(i+1)*256,j*256:(j+1)*256]                
-                    inp = np.expand_dims(temp_img, axis=0) 
-                    
-                    #predict
-                    x=model.predict(inp)
-                    
-                    # Extract the output image
-                    out=x[0,:,:,0] 
-                    
-                    # Store the output tile 
-                    final_img[i*256:(i+1)*256,j*256:(j+1)*256]=out 
-                    
-            # get pad dimensions on all 4 sides of the image        
-            top_pad,bottom_pad,left_pad,right_pad=pad_dimensions
-            
-            # Extract the Desired output from the padded output
-            out_image=final_img[top_pad:final_img.shape[0]-bottom_pad,left_pad:final_img.shape[1]-right_pad]
-            
-            # Form a binary image
-            out_image=np.rint(out_image)*255 
-            out_image = out_image.astype(np.uint8)    
-            
-            # Convert the output to a 5-D arrray to enable bfio to write the image.
-            output_image_5channel=np.zeros((out_image.shape[0],out_image.shape[1],1,1,1),dtype='uint8')
-            output_image_5channel[:,:,0,0,0]=out_image
-            
-            # Export the output to the desired directory
-            bw = bfio.BioWriter(str(Path(output_dir).joinpath(Path(filename).name).absolute()),
-                            metadata=bf.read_metadata() )
-            bw.pixel_type(dtype='uint8')
-            bw.write_image(output_image_5channel)
-            bw.close_image()  
             
     except Exception:
         traceback.print_exc()
     
     
     finally:
-        logger.info("Closing Javabridge...") 
-        jutil.kill_vm()
+        logger.info("Finished Batch...") 
+        
 
 
 

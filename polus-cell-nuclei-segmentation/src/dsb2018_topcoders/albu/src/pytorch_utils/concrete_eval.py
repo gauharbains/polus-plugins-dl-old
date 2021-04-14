@@ -7,7 +7,7 @@ import numpy as np
 
 from .eval import Evaluator
 from pathlib import Path
-from bfio import BioReader
+
 
 from dataset.neural_dataset import SequentialDataset
 from torch.utils.data.dataloader import DataLoader as PytorchDataLoader
@@ -33,7 +33,6 @@ class FullImageEvaluator(Evaluator):
         # print(Path(path).resolve())
         # print(cv2.imread(path, 0))
         rows, cols = cv2.imread(path, 0).shape[:2]
-        #cols, rows = BioReader.image_size(path)
         prediction = prediction[0:rows, 0:cols,...]
         if prediction.shape[2] < 3:
             zeros = np.zeros((rows, cols), dtype=np.float32)
