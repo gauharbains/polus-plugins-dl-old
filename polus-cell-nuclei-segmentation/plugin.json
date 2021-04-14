@@ -1,6 +1,6 @@
 {
     "name": "Cell Nuclei Segmentation",
-	"version": "2.0.19",
+	"version": "2.0.20",
 	"title": "Cell Nuclei Segmentation using Pre-trained Neural networks",
 	"description": "This plugin consists of pre-trained neural networks to segment cell nuclei. The user can choose which neural network to use from a drop down menu ",
 	"author": "Gauhar Bains (gauhar.bains@labshare.org), Konstantin Taletskiy (Konstantin.Taletskiy@labshare.org), Nick Schaub (nick.schaub@nih.gov) ",
@@ -8,7 +8,7 @@
     "repository": "https://github.com/labshare/polus-plugins",
     "website": "https://ncats.nih.gov/preclinical/core/informatics",
     "citation": "topcoders : https://github.com/selimsef/dsb2018_topcoders/ ; unet : https://github.com/axium/Data-Science-Bowl-2018 ",
-	"containerId": "labshare/polus-cell-nuclei-segmentation:2.0.19",
+	"containerId": "labshare/polus-cell-nuclei-segmentation:2.0.20",
 
 	"inputs": [
 		{
