@@ -11,7 +11,7 @@
     "containerId": "labshare/polus-smp-inference-plugin-plugin:0.1.1",
     "inputs": [
       {
-        "name": "filePattern",
+        "name": "pattern",
         "type": "string",
         "description": "Filename pattern used to separate data",
         "required": true
@@ -44,7 +44,7 @@
     ],
     "ui": [
       {
-        "key": "inputs.filePattern",
+        "key": "inputs.pattern",
         "title": "Filename pattern",
         "description": "Filename pattern used to separate data"
       },

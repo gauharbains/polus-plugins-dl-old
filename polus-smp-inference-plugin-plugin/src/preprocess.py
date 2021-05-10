@@ -1,4 +1,6 @@
 import numpy as np
+import typing
+import torchvision
 
 class LocalNorm(object):
     def __init__(self,
