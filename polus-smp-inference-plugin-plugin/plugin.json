@@ -1,0 +1,62 @@
+{
+    "name": "SMP Inference Plugin",
+    "version": "0.1.1",
+    "title": "SMP Inference Plugin",
+    "description": "Segmentation models inference plugin",
+    "author": "Gauhar Bains (gauhar.bains@labshare.org)",
+    "institution": "National Center for Advancing Translational Sciences, National Institutes of Health",
+    "repository": "https://github.com/labshare/polus-plugins",
+    "website": "https://ncats.nih.gov/preclinical/core/informatics",
+    "citation": "",
+    "containerId": "labshare/polus-smp-inference-plugin-plugin:0.1.1",
+    "inputs": [
+      {
+        "name": "filePattern",
+        "type": "string",
+        "description": "Filename pattern used to separate data",
+        "required": true
+      },
+      {
+        "name": "inpDir",
+        "type": "collection",
+        "description": "Input image collection to be processed by this plugin",
+        "required": true
+      },
+      {
+        "name": "pretrainedModel",
+        "type": "enum",
+        "options": {
+          "values": [
+              "Nuclei",
+              "Cyto"
+          ]
+      },
+        "description": "Input image collection to be processed by this plugin",
+        "required": true
+      }
+    ],
+    "outputs": [
+      {
+        "name": "outDir",
+        "type": "collection",
+        "description": "Output collection"
+      }
+    ],
+    "ui": [
+      {
+        "key": "inputs.filePattern",
+        "title": "Filename pattern",
+        "description": "Filename pattern used to separate data"
+      },
+      {
+        "key": "inputs.inpDir",
+        "title": "Input collection",
+        "description": "Input image collection to be processed by this plugin"
+      },
+      {
+        "key": "inputs.pretrainedModel",
+        "title": "Pre-trained Model",
+        "description": "Pre-trained model to use"
+      }
+    ]
+  }
