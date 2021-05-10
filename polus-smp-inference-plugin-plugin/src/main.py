@@ -1,8 +1,10 @@
 from bfio.bfio import BioReader, BioWriter
-import argparse, logging, subprocess, time, multiprocessing, sys
+import argparse, logging, subprocess, time, multiprocessing, sys, os
 import numpy as np
 from pathlib import Path
 import torch 
+import torchvision
+from preprocess import LocalNorm
 
 tile_size = 1024
 
@@ -13,11 +15,7 @@ def pad_image(img, out_shape=(tile_size,tile_size)):
     padded_img = np.pad(img, [(0,pad_x),(0,pad_y)], mode='reflect') 
     return padded_img, (pad_x,pad_y)
 
-def preprocess_image(img):
-    pass
-
     
-
 if __name__=="__main__":
     # Initialize the logger
     logging.basicConfig(format='%(asctime)s - %(name)-8s - %(levelname)-8s - %(message)s',
@@ -60,6 +58,12 @@ if __name__=="__main__":
     cyto_model_path = ''
     model_path = nuclei_model_path if pretrainedModel=='Nuclei' else cyto_model_path
 
+    # initialize preprocessing
+    preprocess = torchvision.transforms.Compose([
+           torchvision.transforms.ToTensor(),
+           LocalNorm() 
+           ])
+
     # Surround with try/finally for proper error catching
     try:
         # load model
@@ -72,7 +76,8 @@ if __name__=="__main__":
         for f in fp():
             file_name = f[0]['file']
 
-            with BioReader(file_name) as br:
+            with BioReader(file_name) as br, \
+                BioWriter(Path(outDir).joinpath(Path(file_name).name):
                 
                 # iterate over tiles
                 for x in range(0,br.X,tile_size):
@@ -83,37 +88,18 @@ if __name__=="__main__":
 
                         # load image tile
                         img = br[y:y_max,x:x_max,0:1,0,0][:,:,0,0,0]
-                        img = preprocess_image(img)
 
                         # pad image if required
                         pad_dims = None
                         if not (img.shape[0]//1024==1 and img.shape[1]//1024==1):
                             img, pad_dims = pad_image(img)
                         
-                        
+                        # preprocess image
+                        img = preprocess(img).unsqueeze(0)
 
-                        
-
-                        
-
-                        
-
-
-
-
-
-
-            image = np.squeeze(br.read_image())
-
-            # initialize the output
-            out_image = np.zeros(image.shape,dtype=br._pix['type'])
-            logger.info('Processing image ({}/{}): {}'.format(i,len(inpDir_files),f))
-            out_image = awesome_math_and_science_function(image)
-
-            # Write the output
-            bw = BioWriter(Path(outDir).joinpath(f),metadata=br.read_metadata())
-            bw.write_image(np.reshape(out_image,(br.num_y(),br.num_x(),br.num_z(),1,1)))
-        
+                        with torch.no_grad():
+                            out = model(img)
+            
     finally:
         logger.info('Finished Execution')
         # Exit the program
