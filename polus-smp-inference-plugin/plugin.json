@@ -1,14 +1,14 @@
 {
-    "name": "SMP Inference Plugin",
+    "name": "SMP Inference",
     "version": "0.1.1",
-    "title": "SMP Inference Plugin",
+    "title": "SMP Inference",
     "description": "Segmentation models inference plugin",
     "author": "Gauhar Bains (gauhar.bains@labshare.org)",
     "institution": "National Center for Advancing Translational Sciences, National Institutes of Health",
     "repository": "https://github.com/labshare/polus-plugins",
     "website": "https://ncats.nih.gov/preclinical/core/informatics",
     "citation": "",
-    "containerId": "labshare/polus-smp-inference-plugin-plugin:0.1.1",
+    "containerId": "labshare/polus-smp-inference-plugin:0.1.1",
     "inputs": [
       {
         "name": "pattern",
