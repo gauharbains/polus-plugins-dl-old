@@ -70,6 +70,7 @@ if __name__=="__main__":
     # Surround with try/finally for proper error catching
     try:
         # load model
+        logger.info('loading pretrained model')
         model = torch.load(model_path)
         model.eval()
 
@@ -78,10 +79,10 @@ if __name__=="__main__":
         # Loop through files in inpDir image collection and process
         for f in fp():
             file_name = f[0]['file']
-            logger.info('Processing image: {}'.format(file_name))
+            logger.info('Processing image: {}'.format(file_name.name))
 
             with BioReader(file_name) as br, \
-                BioWriter(Path(outDir).joinpath(Path(file_name).name)):
+                 BioWriter(Path(outDir).joinpath(Path(file_name).name), metadata=br.metadata) as bw:
                 bw.dtype = np.uint8
                 
                 # iterate over tiles
@@ -98,6 +99,7 @@ if __name__=="__main__":
                             img, pad_dims = pad_image(img)
                         
                         # preprocess image
+                        img = img.astype(np.float32)
                         img = preprocess(img).unsqueeze(0)
 
                         with torch.no_grad():
@@ -106,7 +108,7 @@ if __name__=="__main__":
                         # postpreocessing and write tile
                         out[out>0] = 255
                         out[out<=0] = 0
-                        out = out[0,0,:-pad_dims[0],:-pad_dims[1]]
+                        out = out[0,0,:-pad_dims[0],:-pad_dims[1]] if pad_dims!=None else out[0,0,:,:]
                         bw[y:y_max,x:x_max,0:1,0,0] = out.astype(np.uint8)
 
     except Exception:
