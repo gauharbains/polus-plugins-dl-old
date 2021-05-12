@@ -1,0 +1,100 @@
+{
+    "name": "SMP Training",
+    "version": "0.1.1",
+    "title": "SMP Training",
+    "description": "Segmentation models training plugin",
+    "author": "Gauhar Bains (gauhar.bains@labshare.org)",
+    "institution": "National Center for Advancing Translational Sciences, National Institutes of Health",
+    "repository": "https://github.com/labshare/polus-plugins",
+    "website": "https://ncats.nih.gov/preclinical/core/informatics",
+    "citation": "",
+    "containerId": "labshare/polus-smp-training-plugin:0.1.1",
+    "inputs": [
+      {
+        "name": "encoderName",
+        "type": "string",
+        "description": "encoder to use",
+        "required": true
+      },
+      {
+        "name": "encoderWeights",
+        "type": "string",
+        "description": "Pretrained weights for the encoder",
+        "required": true
+      },
+      {
+        "name": "epochs",
+        "type": "int",
+        "description": "Number of training epochs",
+        "required": true
+      },
+      {
+        "name": "filePattern",
+        "type": "string",
+        "description": "Filename pattern used to separate data",
+        "required": true
+      },
+      {
+        "name": "imagesDir",
+        "type": "collection",
+        "description": "Collection containing images",
+        "required": true
+      },
+      {
+        "name": "labelsDir",
+        "type": "collection",
+        "description": "Collection containing labels",
+        "required": true
+      },
+      {
+        "name": "loss",
+        "type": "string",
+        "description": "Loss function to use",
+        "required": true
+      }
+    ],
+    "outputs": [
+      {
+        "name": "outDir",
+        "type": "collection",
+        "description": "Output collection"
+      }
+    ],
+    "ui": [
+      {
+        "key": "inputs.encoderName",
+        "title": "Encoder Name",
+        "description": "encoder to use"
+      },
+      {
+        "key": "inputs.encoderWeights",
+        "title": "Encoder Weights",
+        "description": "Pretrained weights for the encoder"
+      },
+      {
+        "key": "inputs.epochs",
+        "title": "Epochs",
+        "description": "Number of training epochs"
+      },
+      {
+        "key": "inputs.filePattern",
+        "title": "Filename pattern",
+        "description": "Filename pattern used to separate data"
+      },
+      {
+        "key": "inputs.imagesDir",
+        "title": "Image collection",
+        "description": "Collection containing images"
+      },
+      {
+        "key": "inputs.labelsDir",
+        "title": "Labels collection",
+        "description": "Collection containing labels"
+      },
+      {
+        "key": "inputs.loss",
+        "title": "Loss",
+        "description": "Loss function to use"
+      }
+    ]
+  }
