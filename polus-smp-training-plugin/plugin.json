@@ -101,8 +101,8 @@
     "outputs": [
       {
         "name": "outDir",
-        "type": "collection",
-        "description": "Output collection"
+        "type": "genericData",
+        "description": "Output model"
       }
     ],
     "ui": [
@@ -150,6 +150,11 @@
         "key": "inputs.metric",
         "title": "Metric",
         "description": "Performance metric"
+      },
+      {
+        "key": "inputs.batchSize",
+        "title": "Batch Size",
+        "description": "Batch Size"
       }
     ]
   }

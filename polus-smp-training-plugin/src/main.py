@@ -110,12 +110,13 @@ if __name__=="__main__":
             verbose=True
         )
 
+        # train and save model
         for i in range(0, epochs):
             logger.info('Epoch: {}'.format(i))
             train_logs = train_epoch.run(train_loader)
 
         # save model
-
+        torch.save(model, Path(outDir).joinpath('out_model.pth'))
 
     finally:
         # Exit the program
