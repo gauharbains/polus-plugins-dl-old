@@ -3,9 +3,9 @@ import argparse, logging, subprocess, time, multiprocessing, sys
 import numpy as np
 from pathlib import Path
 import torch 
-from torch.utils.data import DataLoader
-from torch.utils.data import Dataset as BaseDataset
 import segmentation_models_pytorch as smp
+from utils.dataloader import Dataset
+from utils.params import models,losses
 
 if __name__=="__main__":
     # Initialize the logger
@@ -19,6 +19,8 @@ if __name__=="__main__":
     parser = argparse.ArgumentParser(prog='main', description='Segmentation models training plugin')
     
     # Input arguments
+    parser.add_argument('--modelName', dest='modelName', type=str,
+                        help='encoder to use', required=True)
     parser.add_argument('--encoderName', dest='encoderName', type=str,
                         help='encoder to use', required=True)
     parser.add_argument('--encoderWeights', dest='encoderWeights', type=str,
@@ -39,6 +41,8 @@ if __name__=="__main__":
     
     # Parse the arguments
     args = parser.parse_args()
+    modelName = args.modelName
+    logger.info('modelName = {}'.format(modelName))
     encoderName = args.encoderName
     logger.info('encoderName = {}'.format(encoderName))
     encoderWeights = args.encoderWeights
@@ -61,6 +65,8 @@ if __name__=="__main__":
     logger.info('loss = {}'.format(loss))
     outDir = args.outDir
     logger.info('outDir = {}'.format(outDir))
+
+    model_dict = {''}
     
     # Surround with try/finally for proper error catching
     try:

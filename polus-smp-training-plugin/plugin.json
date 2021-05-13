@@ -11,6 +11,24 @@
     "containerId": "labshare/polus-smp-training-plugin:0.1.1",
     "inputs": [
       {
+        "name": "modelName",
+        "type": "enum",
+        "options": {
+          "values": [
+              "unet",
+              "unetpp",
+              "Linknet",
+              "FPN",
+              "PSPNet",
+              "PAN",
+              "DeepLabV3",
+              "DeepLabV3Plus"
+          ]
+      },
+        "description": "model to use",
+        "required": true
+      },
+      {
         "name": "encoderName",
         "type": "string",
         "description": "encoder to use",
@@ -48,7 +66,13 @@
       },
       {
         "name": "loss",
-        "type": "string",
+        "type": "enum",
+        "options": {
+          "values": [
+              "Dice",
+              "Jaccard"
+          ]
+      },
         "description": "Loss function to use",
         "required": true
       }
@@ -61,6 +85,11 @@
       }
     ],
     "ui": [
+      {
+        "key": "inputs.modelName",
+        "title": "Model Name",
+        "description": "model to use"
+      },
       {
         "key": "inputs.encoderName",
         "title": "Encoder Name",

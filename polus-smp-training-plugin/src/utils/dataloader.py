@@ -85,14 +85,12 @@ class Dataset(BaseDataset):
         # read and preprocess image
         with BioReader(Path(self.images_dir).joinpath(self.image_names[i])) as br:
             img = br[:,:,0:1,0,0][:,:,0,0,0]
-        
         img = img.astype(np.float32)
         img = self.preprocessing(img).numpy()
 
         # read and preprocess masks
         with BioReader(Path(self.masks_dir).joinpath(self.image_names[i])) as br:
             mask = br[:,:,0:1,0,0][:,:,0,0,0]       
- 
         mask[mask>=1] = 1
         mask[mask<1] = 0
         mask = mask.astype(np.float32)
