@@ -75,6 +75,27 @@
       },
         "description": "Loss function to use",
         "required": true
+      },
+      {
+        "name": "metric",
+        "type": "enum",
+        "options": {
+          "values": [
+              "IoU",
+              "Fscore",
+              "Precision",
+              "Accuracy",
+              "Recall"
+          ]
+      },
+        "description": "Performance metric to use",
+        "required": true
+      },
+      {
+        "name": "batchSize",
+        "type": "string",
+        "description": "Batch Size",
+        "required": true
       }
     ],
     "outputs": [
@@ -124,6 +145,11 @@
         "key": "inputs.loss",
         "title": "Loss",
         "description": "Loss function to use"
+      },
+      {
+        "key": "inputs.metric",
+        "title": "Metric",
+        "description": "Performance metric"
       }
     ]
   }
