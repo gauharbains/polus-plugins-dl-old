@@ -99,4 +99,4 @@ class Dataset(BaseDataset):
         return img, mask
         
     def __len__(self):
-        return len(self.ids)
+        return len(self.image_names)

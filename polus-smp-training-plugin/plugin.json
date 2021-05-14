@@ -47,7 +47,7 @@
         "required": true
       },
       {
-        "name": "filePattern",
+        "name": "pattern",
         "type": "string",
         "description": "Filename pattern used to separate data",
         "required": true
@@ -127,7 +127,7 @@
         "description": "Number of training epochs"
       },
       {
-        "key": "inputs.filePattern",
+        "key": "inputs.pattern",
         "title": "Filename pattern",
         "description": "Filename pattern used to separate data"
       },

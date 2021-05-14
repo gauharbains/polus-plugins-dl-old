@@ -1,7 +1,7 @@
 import segmentation_models_pytorch as smp
 import segmentation_models_pytorch.utils.losses as losses
 
-models_dict = {'unet': smp.unet,
+models_dict = {'unet': smp.Unet,
           'unetpp': smp.UnetPlusPlus,
           'Linknet': smp.Linknet,
           'FPN': smp.FPN,

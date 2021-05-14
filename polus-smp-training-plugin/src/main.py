@@ -1,4 +1,4 @@
-import argparse, logging, subprocess, time, multiprocessing, sys
+import argparse, logging, subprocess, time, multiprocessing, sys, traceback
 import numpy as np
 import torch 
 import segmentation_models_pytorch as smp
@@ -53,7 +53,7 @@ if __name__=="__main__":
     logger.info('encoderName = {}'.format(encoderName))
     encoderWeights = args.encoderWeights
     logger.info('encoderWeights = {}'.format(encoderWeights))
-    epochs = args.epochs
+    epochs = int(args.epochs)
     logger.info('epochs = {}'.format(epochs))
     pattern = args.pattern
     logger.info('pattern = {}'.format(pattern))
@@ -86,7 +86,7 @@ if __name__=="__main__":
         # intiliaze model and training parameters
         model_class = models_dict[modelName]
         loss_class = loss_dict[loss]()
-        metric_class = metric_dict[metric]()
+        metric_class = [metric_dict[metric](threshold=0.5)]
 
         model = model_class(
             encoder_name=encoderName,        
@@ -117,6 +117,9 @@ if __name__=="__main__":
 
         # save model
         torch.save(model, Path(outDir).joinpath('out_model.pth'))
+
+    except Exception:
+        traceback.print_exc()
 
     finally:
         # Exit the program
