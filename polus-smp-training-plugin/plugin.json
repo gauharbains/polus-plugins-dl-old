@@ -47,9 +47,15 @@
         "required": true
       },
       {
-        "name": "pattern",
+        "name": "images_pattern",
         "type": "string",
-        "description": "Filename pattern used to separate data",
+        "description": "Filename pattern for images",
+        "required": true
+      },
+      {
+        "name": "labels_pattern",
+        "type": "string",
+        "description": "Filename pattern for labels",
         "required": true
       },
       {
@@ -127,9 +133,14 @@
         "description": "Number of training epochs"
       },
       {
-        "key": "inputs.pattern",
-        "title": "Filename pattern",
-        "description": "Filename pattern used to separate data"
+        "key": "inputs.images_pattern",
+        "title": "Images filename pattern",
+        "description": "Filename pattern for images"
+      },
+      {
+        "key": "inputs.labels_pattern",
+        "title": "Labels filename pattern",
+        "description": "Filename pattern for labels"
       },
       {
         "key": "inputs.imagesDir",
