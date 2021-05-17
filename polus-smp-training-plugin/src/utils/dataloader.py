@@ -69,28 +69,37 @@ class Dataset(BaseDataset):
     def __init__(
             self, 
             images_dir, 
-            masks_dir,
-            pattern
+            labels_dir,
+            images_pattern,
+            labels_pattern
     ):
-        self.images_dir = images_dir
-        self.masks_dir = masks_dir
-        self.fp = filepattern.FilePattern(file_path=images_dir, pattern=pattern)
-        self.image_names= [f[0]['file'].name for f in self.fp()]
+
+        self.tile_size = 256
+        self.images_fp = filepattern.FilePattern(file_path=images_dir, pattern=images_pattern)
+        self.labels_fp = filepattern.FilePattern(file_path=labels_dir, pattern=labels_pattern)
+        self.get_tile_mapping()
+        self.get_image_labels_mapping()
         self.preprocessing = torchvision.transforms.Compose([
                              torchvision.transforms.ToTensor(),
                              LocalNorm()])
 
     def __getitem__(self, i):
         
+        
+        image_name = self.tile_map[i][0]
+        x, x_max = self.tile_map[i][1]
+        y, y_max = self.tile_map[i][2]
+
         # read and preprocess image
-        with BioReader(Path(self.images_dir).joinpath(self.image_names[i])) as br:
-            img = br[:,:,0:1,0,0][:,:,0,0,0]
+        with BioReader(image_name) as br:
+            img = br[y:y_max,x:x_max,0:1,0,0][:,:,0,0,0]
         img = img.astype(np.float32)
         img = self.preprocessing(img).numpy()
 
-        # read and preprocess masks
-        with BioReader(Path(self.masks_dir).joinpath(self.image_names[i])) as br:
-            mask = br[:,:,0:1,0,0][:,:,0,0,0]       
+        # read and preprocess label
+        label_name = self.name_map[image_name]
+        with BioReader(label_name) as br:
+            mask = br[y:y_max,x:x_max,0:1,0,0][:,:,0,0,0]      
         mask[mask>=1] = 1
         mask[mask<1] = 0
         mask = mask.astype(np.float32)
@@ -99,4 +108,53 @@ class Dataset(BaseDataset):
         return img, mask
         
     def __len__(self):
-        return len(self.image_names)
+        return len(self.tile_map.keys())
+    
+    def get_tile_mapping(self):
+        """ creates a tile map for the __getitem__ function
+        This function iterates over all the files in the input 
+        collection and creates a dictionary that can be used in 
+        __getitem_ function. 
+        """
+        self.tile_map = {}
+        tile_size = self.tile_size
+        tile_num = 0
+
+        # iterate over all files
+        for f in self.images_fp():
+            file_name = f[0]['file']
+            
+            with BioReader(file_name) as br:
+                # iterate over tiles
+                for x in range(0,br.X,tile_size):
+                    x_max = min([br.X,x+tile_size])
+                    for y in range(0,br.Y, tile_size):
+                        y_max = min([br.Y,y+tile_size])
+
+                        # add tile to tile_map
+                        self.tile_map[tile_num] = (file_name, (x,x_max), (y,y_max))
+                        tile_num+=1
+    
+    def get_image_labels_mapping(self):
+        """creates a filename map between images and labels
+        In the case where image filenames have different filename 
+        pattern than label filenames, this function creates a map
+        between the corresponding images and labels
+        """
+        self.name_map = {}
+
+        for f in self.images_fp():
+            image_name = f[0]['file']
+            vars = {k.upper():v for k,v in f[0].items() if k!='file' }
+            label_name = self.labels_fp.get_matching(**vars)[0]['file']
+            self.name_map[image_name] = [label_name]
+
+
+
+
+
+
+        
+
+
+    
