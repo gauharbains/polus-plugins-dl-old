@@ -99,13 +99,13 @@ class Dataset(BaseDataset):
         # read and preprocess label
         label_name = self.name_map[image_name]
         with BioReader(label_name) as br:
-            mask = br[y:y_max,x:x_max,0:1,0,0][:,:,0,0,0]      
-        mask[mask>=1] = 1
-        mask[mask<1] = 0
-        mask = mask.astype(np.float32)
-        mask = mask.reshape((1,mask.shape[0], mask.shape[1]))
+            label = br[y:y_max,x:x_max,0:1,0,0][:,:,0,0,0]      
+        label[label>=1] = 1
+        label[label<1] = 0
+        label = label.astype(np.float32)
+        label = label.reshape((1,label.shape[0], label.shape[1]))
 
-        return img, mask
+        return img, label
         
     def __len__(self):
         return len(self.tile_map.keys())
@@ -147,7 +147,7 @@ class Dataset(BaseDataset):
             image_name = f[0]['file']
             vars = {k.upper():v for k,v in f[0].items() if k!='file' }
             label_name = self.labels_fp.get_matching(**vars)[0]['file']
-            self.name_map[image_name] = [label_name]
+            self.name_map[image_name] = label_name
 
 
 
