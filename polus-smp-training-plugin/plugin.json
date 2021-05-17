@@ -1,6 +1,6 @@
 {
     "name": "SMP Training",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "title": "SMP Training",
     "description": "Segmentation models training plugin",
     "author": "Gauhar Bains (gauhar.bains@labshare.org)",
@@ -8,7 +8,7 @@
     "repository": "https://github.com/labshare/polus-plugins",
     "website": "https://ncats.nih.gov/preclinical/core/informatics",
     "citation": "",
-    "containerId": "labshare/polus-smp-training-plugin:0.1.1",
+    "containerId": "labshare/polus-smp-training-plugin:0.1.2",
     "inputs": [
       {
         "name": "modelName",
@@ -42,18 +42,18 @@
       },
       {
         "name": "epochs",
-        "type": "int",
+        "type": "number",
         "description": "Number of training epochs",
         "required": true
       },
       {
-        "name": "images_pattern",
+        "name": "imagesPattern",
         "type": "string",
         "description": "Filename pattern for images",
         "required": true
       },
       {
-        "name": "labels_pattern",
+        "name": "labelsPattern",
         "type": "string",
         "description": "Filename pattern for labels",
         "required": true
@@ -133,12 +133,12 @@
         "description": "Number of training epochs"
       },
       {
-        "key": "inputs.images_pattern",
+        "key": "inputs.imagesPattern",
         "title": "Images filename pattern",
         "description": "Filename pattern for images"
       },
       {
-        "key": "inputs.labels_pattern",
+        "key": "inputs.labelsPattern",
         "title": "Labels filename pattern",
         "description": "Filename pattern for labels"
       },

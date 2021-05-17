@@ -29,9 +29,9 @@ if __name__=="__main__":
                         help='Pretrained weights for the encoder', required=True)
     parser.add_argument('--epochs', dest='epochs', type=str,
                         help='Number of training epochs', required=True)
-    parser.add_argument('--images_pattern', dest='images_pattern', type=str,
+    parser.add_argument('--imagesPattern', dest='imagesPattern', type=str,
                         help='Filename pattern for images', required=True)
-    parser.add_argument('--labels_pattern', dest='labels_pattern', type=str,
+    parser.add_argument('--labelsPattern', dest='labelsPattern', type=str,
                         help='Filename pattern for labels', required=True)
     parser.add_argument('--imagesDir', dest='imagesDir', type=str,
                         help='Collection containing images', required=True)
@@ -57,10 +57,10 @@ if __name__=="__main__":
     logger.info('encoderWeights = {}'.format(encoderWeights))
     epochs = int(args.epochs)
     logger.info('epochs = {}'.format(epochs))
-    images_pattern = args.images_pattern
-    logger.info('images_pattern = {}'.format(images_pattern))
-    labels_pattern = args.labels_pattern
-    logger.info('labels_pattern = {}'.format(labels_pattern))
+    imagesPattern = args.imagesPattern
+    logger.info('imagesPattern = {}'.format(imagesPattern))
+    labelsPattern = args.labelsPattern
+    logger.info('labelsPattern = {}'.format(labelsPattern))
     imagesDir = args.imagesDir
     if (Path.is_dir(Path(args.imagesDir).joinpath('images'))):
         # switch to images folder if present
@@ -84,7 +84,7 @@ if __name__=="__main__":
     try:
         logger.info('Initializing dataloader')
         # initialize datalaoder
-        dataset = Dataset(imagesDir, labelsDir, images_pattern, labels_pattern)
+        dataset = Dataset(imagesDir, labelsDir, imagesPattern, labelsPattern)
         train_loader = DataLoader(dataset, batch_size=batchSize)
 
         # intiliaze model and training parameters
