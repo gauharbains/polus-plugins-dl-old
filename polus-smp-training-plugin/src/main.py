@@ -121,6 +121,7 @@ if __name__=="__main__":
             train_logs = train_epoch.run(train_loader)
 
         # save model
+        logger.info('saving model...')
         torch.save(model, Path(outDir).joinpath('out_model.pth'))
 
     except Exception:
@@ -128,4 +129,5 @@ if __name__=="__main__":
 
     finally:
         # Exit the program
+        logger.info('Exiting workflow...')
         sys.exit()
