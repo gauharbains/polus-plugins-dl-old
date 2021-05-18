@@ -26,25 +26,25 @@
           ]
       },
         "description": "model to use",
-        "required": true
+        "required": false
       },
       {
         "name": "encoderName",
         "type": "string",
         "description": "encoder to use",
-        "required": true
+        "required": false
       },
       {
         "name": "encoderWeights",
         "type": "string",
         "description": "Pretrained weights for the encoder",
-        "required": true
+        "required": false
       },
       {
         "name": "epochs",
         "type": "number",
         "description": "Number of training epochs",
-        "required": true
+        "required": false
       },
       {
         "name": "imagesPattern",
@@ -80,7 +80,7 @@
           ]
       },
         "description": "Loss function to use",
-        "required": true
+        "required": false
       },
       {
         "name": "metric",
@@ -95,13 +95,19 @@
           ]
       },
         "description": "Performance metric to use",
-        "required": true
+        "required": false
       },
       {
         "name": "batchSize",
         "type": "string",
         "description": "Batch Size",
-        "required": true
+        "required": false
+      },
+      {
+        "name": "trainValSplit",
+        "type": "number",
+        "description": "Train/validation data split ratio",
+        "required": false
       }
     ],
     "outputs": [
@@ -166,6 +172,11 @@
         "key": "inputs.batchSize",
         "title": "Batch Size",
         "description": "Batch Size"
+      },
+      {
+        "key": "inputs.trainValSplit",
+        "title": "Train/Val split",
+        "description": "Train/validation data split ratio"
       }
     ]
   }

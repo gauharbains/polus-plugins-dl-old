@@ -18,7 +18,6 @@ def get_image_labels_mapping(images_fp, labels_fp):
     pattern than label filenames, this function creates a map
     between the corresponding images and labels
     
-
     Args:
         images_fp ([FilePattern object]): filepattern object for images
         labels_fp ([FilePattern object]): filepattern object for labels
@@ -42,9 +41,9 @@ def get_tile_mapping(image_names):
     collection and creates a dictionary that can be used in 
     __getitem__ function in the Dataset class. 
     
-
     Args:
         image_names (list): list containing path to images
+        
     Returns:
         dict: dictionary containing tile mapping
     """
@@ -53,8 +52,8 @@ def get_tile_mapping(image_names):
 
     # iterate over all files
     for file_name in image_names:
-        
         with BioReader(file_name) as br:
+
             # iterate over tiles
             for x in range(0,br.X,tile_size):
                 x_max = min([br.X,x+tile_size])
@@ -64,7 +63,6 @@ def get_tile_mapping(image_names):
                     # add tile to tile_map
                     tile_map[tile_num] = (file_name, (x,x_max), (y,y_max))
                     tile_num+=1
-
     return tile_map
 
 
@@ -82,7 +80,6 @@ class Dataset(BaseDataset):
                              LocalNorm()])
 
     def __getitem__(self, i):
-        
         image_name = self.tile_map[i][0]
         x, x_max = self.tile_map[i][1]
         y, y_max = self.tile_map[i][2]
@@ -101,7 +98,6 @@ class Dataset(BaseDataset):
         label[label<1] = 0
         label = label.astype(np.float32)
         label = label.reshape((1,label.shape[0], label.shape[1]))
-
         return img, label
         
     def __len__(self):

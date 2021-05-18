@@ -25,13 +25,13 @@ if __name__=="__main__":
     
     # Input arguments
     parser.add_argument('--modelName', dest='modelName', type=str,
-                        help='model to use', required=True)
+                        help='model to use', required=False)
     parser.add_argument('--encoderName', dest='encoderName', type=str,
-                        help='encoder to use', required=True)
+                        help='encoder to use', required=False)
     parser.add_argument('--encoderWeights', dest='encoderWeights', type=str,
-                        help='Pretrained weights for the encoder', required=True)
+                        help='Pretrained weights for the encoder', required=False)
     parser.add_argument('--epochs', dest='epochs', type=str,
-                        help='Number of training epochs', required=True)
+                        help='Number of training epochs', required=False)
     parser.add_argument('--imagesPattern', dest='imagesPattern', type=str,
                         help='Filename pattern for images', required=True)
     parser.add_argument('--labelsPattern', dest='labelsPattern', type=str,
@@ -41,24 +41,26 @@ if __name__=="__main__":
     parser.add_argument('--labelsDir', dest='labelsDir', type=str,
                         help='Collection containing labels', required=True)
     parser.add_argument('--loss', dest='loss', type=str,
-                        help='Loss function', required=True)
+                        help='Loss function', required=False)
     parser.add_argument('--metric', dest='metric', type=str,
-                        help='Performance metric', required=True)
+                        help='Performance metric', required=False)
     parser.add_argument('--batchSize', dest='batchSize', type=str,
-                        help='batchSize', required=True)
+                        help='batchSize', required=False)
+    parser.add_argument('--trainValSplit', dest='trainValSplit', type=str,
+                        help='trainValSplit', required=False)
     # Output arguments
     parser.add_argument('--outDir', dest='outDir', type=str,
                         help='Output collection', required=True)
     
     # Parse the arguments
     args = parser.parse_args()
-    modelName = args.modelName
+    modelName = args.modelName if args.modelName!=None else 'unet'
     logger.info('modelName = {}'.format(modelName))
-    encoderName = args.encoderName
+    encoderName = args.encoderName if args.encoderName!=None else 'resnet34'
     logger.info('encoderName = {}'.format(encoderName))
-    encoderWeights = args.encoderWeights
+    encoderWeights = args.encoderWeights if args.encoderWeights!=None else 'imagenet'
     logger.info('encoderWeights = {}'.format(encoderWeights))
-    epochs = int(args.epochs)
+    epochs = int(args.epochs) if args.epochs!=None else 10
     logger.info('epochs = {}'.format(epochs))
     imagesPattern = args.imagesPattern
     logger.info('imagesPattern = {}'.format(imagesPattern))
@@ -74,12 +76,14 @@ if __name__=="__main__":
         # switch to images folder if present
         fpath = str(Path(args.labelsDir).joinpath('images').absolute())
     logger.info('labelsDir = {}'.format(labelsDir))
-    loss = args.loss
+    loss = args.loss if args.loss!=None else 'Dice'
     logger.info('loss = {}'.format(loss))
-    metric = args.metric
+    metric = args.metric if args.metric!=None else 'IoU'
     logger.info('metric = {}'.format(metric))
-    batchSize = int(args.batchSize)
+    batchSize = int(args.batchSize) if args.batchSize!=None else 8
     logger.info('batchSize = {}'.format(batchSize))
+    trainValSplit = float(args.trainValSplit) if args.trainValSplit!=None else 0.7
+    logger.info('trainValSplit = {}'.format(trainValSplit))
     outDir = args.outDir
     logger.info('outDir = {}'.format(outDir))
 
@@ -93,7 +97,7 @@ if __name__=="__main__":
 
         # train validation split
         image_names = list(name_map.keys())
-        train_names, val_names = train_test_split(image_names, shuffle=True, test_size=0.3)
+        train_names, val_names = train_test_split(image_names, shuffle=True, train_size=trainValSplit)
         train_map = {k:name_map[k] for k in train_names}
         val_map = {k:name_map[k] for k in val_names}
 
@@ -140,8 +144,8 @@ if __name__=="__main__":
             model, 
             loss=loss_class, 
             metrics=metric_class, 
-            verbose=True,
-)
+            verbose=True
+        )
 
         # train and save model
         for i in range(0, epochs):
