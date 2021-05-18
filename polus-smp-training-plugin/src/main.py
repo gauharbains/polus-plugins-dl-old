@@ -1,10 +1,13 @@
 import argparse, logging, subprocess, time, multiprocessing, sys, traceback
+from os import name
 import numpy as np
 import torch 
 import segmentation_models_pytorch as smp
+import filepattern
+import utils.dataloader as dl
+from sklearn.model_selection import train_test_split
 from pathlib import Path
 from bfio.bfio import BioReader, BioWriter
-from utils.dataloader import Dataset
 from torch.utils.data import DataLoader
 from utils.params import models_dict,loss_dict, metric_dict
 from segmentation_models_pytorch.utils.base import Activation
@@ -82,10 +85,28 @@ if __name__=="__main__":
 
     # Surround with try/finally for proper error catching
     try:
-        logger.info('Initializing dataloader')
+        images_fp = filepattern.FilePattern(file_path=imagesDir, pattern=imagesPattern)
+        labels_fp = filepattern.FilePattern(file_path=labelsDir, pattern=labelsPattern)
+        
+        # map images to corresponding masks
+        name_map = dl.get_image_labels_mapping(images_fp, labels_fp)
+
+        # train validation split
+        image_names = list(name_map.keys())
+        train_names, val_names = train_test_split(image_names, shuffle=True, test_size=0.3)
+        train_map = {k:name_map[k] for k in train_names}
+        val_map = {k:name_map[k] for k in val_names}
+
+        # get tile maps
+        train_tile_map = dl.get_tile_mapping(train_names)
+        val_tile_map = dl.get_tile_mapping(val_names)
+
         # initialize datalaoder
-        dataset = Dataset(imagesDir, labelsDir, imagesPattern, labelsPattern)
-        train_loader = DataLoader(dataset, batch_size=batchSize)
+        logger.info('Initializing dataloader')
+        train_data = dl.Dataset(train_map, train_tile_map)
+        val_data = dl.Dataset(val_map, val_tile_map)
+        train_loader = DataLoader(train_data, batch_size=batchSize)
+        val_loader = DataLoader(val_data, batch_size=batchSize)
 
         # intiliaze model and training parameters
         logger.info('Initializing model,loss,metric')
@@ -106,7 +127,7 @@ if __name__=="__main__":
         dict(params=model.parameters(), lr=0.0001),
         ])
 
-        # training iterator
+        # train and val iterator
         train_epoch = smp.utils.train.TrainEpoch(
             model, 
             loss=loss_class, 
@@ -115,10 +136,18 @@ if __name__=="__main__":
             verbose=True
         )
 
+        valid_epoch = smp.utils.train.ValidEpoch(
+            model, 
+            loss=loss_class, 
+            metrics=metric_class, 
+            verbose=True,
+)
+
         # train and save model
         for i in range(0, epochs):
             logger.info('Epoch: {}'.format(i))
             train_logs = train_epoch.run(train_loader)
+            valid_logs = valid_epoch.run(val_loader)
 
         # save model
         logger.info('saving model...')
