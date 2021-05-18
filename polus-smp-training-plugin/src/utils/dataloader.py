@@ -53,7 +53,7 @@ def get_tile_mapping(image_names):
     # iterate over all files
     for file_name in image_names:
         with BioReader(file_name) as br:
-
+            
             # iterate over tiles
             for x in range(0,br.X,tile_size):
                 x_max = min([br.X,x+tile_size])
