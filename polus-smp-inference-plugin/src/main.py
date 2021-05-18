@@ -44,7 +44,7 @@ if __name__=="__main__":
                         help='Filename pattern used to separate data', required=True)
     parser.add_argument('--inpDir', dest='inpDir', type=str,
                         help='Input image collection to be processed by this plugin', required=True)
-    parser.add_argument('--modelPath', dest='modelpath', type=str,
+    parser.add_argument('--modelPath', dest='modelPath', type=str,
                         help='pretrained model to use', required=True)
 
     # Output arguments
