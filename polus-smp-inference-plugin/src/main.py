@@ -8,9 +8,19 @@ import torchvision
 from preprocess import LocalNorm
 import filepattern
 
-tile_size = 1024
+tile_size = 256
 
 def pad_image(img, out_shape=(tile_size,tile_size)):
+    """Pad input image to make it a certain zie
+
+    Args:
+        img (array): input image
+        out_shape (tuple, optional): Desired output shape
+
+    Returns:
+        array: padded image
+        tuple: tuple consisting of pad dimensions
+    """
 
     pad_x = img.shape[0] - out_shape[0]
     pad_y = img.shape[1] - out_shape[1]
@@ -34,7 +44,7 @@ if __name__=="__main__":
                         help='Filename pattern used to separate data', required=True)
     parser.add_argument('--inpDir', dest='inpDir', type=str,
                         help='Input image collection to be processed by this plugin', required=True)
-    parser.add_argument('--pretrainedModel', dest='pretrainedModel', type=str,
+    parser.add_argument('--modelPath', dest='modelpath', type=str,
                         help='pretrained model to use', required=True)
 
     # Output arguments
@@ -45,8 +55,8 @@ if __name__=="__main__":
     args = parser.parse_args()
     pattern = args.pattern
     logger.info('pattern = {}'.format(pattern))
-    pretrainedModel = args.pretrainedModel
-    logger.info('pretrainedModel = {}'.format(pretrainedModel))
+    modelPath = args.modelPath
+    logger.info('modelPath = {}'.format(modelPath))
     inpDir = args.inpDir
     if (Path.is_dir(Path(args.inpDir).joinpath('images'))):
         # switch to images folder if present
@@ -55,11 +65,8 @@ if __name__=="__main__":
     outDir = args.outDir
     logger.info('outDir = {}'.format(outDir))
 
-    # pretrained models
-    cwd = os.getcwd()
-    nuclei_model_path = os.path.join(cwd,'Models','nuclei.pth')
-    cyto_model_path = ''
-    model_path = nuclei_model_path if pretrainedModel=='Nuclei' else cyto_model_path
+    # pretrained model
+    model_path = os.path.join(modelPath, 'out_model.pth')
 
     # initialize preprocessing
     preprocess = torchvision.transforms.Compose([
@@ -95,7 +102,7 @@ if __name__=="__main__":
 
                         # pad image if required
                         pad_dims = None
-                        if not (img.shape[0]//1024==1 and img.shape[1]//1024==1):
+                        if not (img.shape[0]//tile_size==1 and img.shape[1]//tile_size==1):
                             img, pad_dims = pad_image(img)
                         
                         # preprocess image
@@ -106,8 +113,8 @@ if __name__=="__main__":
                             out = model(img).numpy()
                         
                         # postpreocessing and write tile
-                        out[out>0] = 255
-                        out[out<=0] = 0
+                        out[out>=0.5] = 255
+                        out[out<0.5] = 0
                         out = out[0,0,:-pad_dims[0],:-pad_dims[1]] if pad_dims!=None else out[0,0,:,:]
                         bw[y:y_max,x:x_max,0:1,0,0] = out.astype(np.uint8)
 

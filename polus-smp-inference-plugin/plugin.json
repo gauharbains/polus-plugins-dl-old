@@ -23,15 +23,9 @@
         "required": true
       },
       {
-        "name": "pretrainedModel",
-        "type": "enum",
-        "options": {
-          "values": [
-              "Nuclei",
-              "Cyto"
-          ]
-      },
-        "description": "Input image collection to be processed by this plugin",
+        "name": "modelPath",
+        "type": "genericData",
+        "description": "Pretrained model path",
         "required": true
       }
     ],
@@ -54,9 +48,9 @@
         "description": "Input image collection to be processed by this plugin"
       },
       {
-        "key": "inputs.pretrainedModel",
-        "title": "Pre-trained Model",
-        "description": "Pre-trained model to use"
+        "key": "inputs.modelPath",
+        "title": "Pre-Trained Model",
+        "description": "Pretrained model to use"
       }
     ]
   }

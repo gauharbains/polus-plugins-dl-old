@@ -13,12 +13,16 @@ class LocalNorm(object):
                                               padding_mode='reflect')
         # Mode can be test, train, and eval
         self.mode = 'eval'
+
+
     def __call__(self,x):
         image = self.pad(x)
         response = self.local_response(image)
         response[response < -self.clip] = -self.clip
         response[response > self.clip] = self.clip
         return response
+
+
     def imboxfilt(self,image):
         """imboxfilt Use a box filter on a stack of images
         This method applies a box filter to an image. The input is assumed to be a
@@ -34,6 +38,8 @@ class LocalNorm(object):
                  image_ii[...,self.window:-1,0:-self.window-1] - \
                  image_ii[...,0:-self.window-1,self.window:-1]
         return output
+
+        
     def local_response(self,image):
         """local_response Regional normalization
         This method normalizes each pixel using the mean and standard deviation of
