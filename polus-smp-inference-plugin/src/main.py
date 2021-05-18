@@ -8,7 +8,7 @@ import torchvision
 from preprocess import LocalNorm
 import filepattern
 
-tile_size = 256
+tile_size = 1024
 
 def pad_image(img, out_shape=(tile_size,tile_size)):
     """Pad input image to make it a certain zie
