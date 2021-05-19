@@ -1,6 +1,7 @@
 import argparse, logging, subprocess, time, multiprocessing, sys, traceback
 from os import name
 import numpy as np
+from segmentation_models_pytorch.utils import train
 import torch 
 import segmentation_models_pytorch as smp
 import filepattern
@@ -137,21 +138,28 @@ if __name__=="__main__":
             loss=loss_class, 
             metrics=metric_class, 
             optimizer=optimizer,
-            verbose=True
+            verbose=False
         )
 
         valid_epoch = smp.utils.train.ValidEpoch(
             model, 
             loss=loss_class, 
             metrics=metric_class, 
-            verbose=True
+            verbose=False
         )
 
         # train and save model
         for i in range(0, epochs):
-            logger.info('Epoch: {}'.format(i))
+            logger.info(' \n ----- Epoch: {} -----'.format(i))
             train_logs = train_epoch.run(train_loader)
             valid_logs = valid_epoch.run(val_loader)
+
+            # print logs
+            train_str = ', '.join(['{}: {}'.format(k,train_logs[k]) for k in train_logs.keys()])
+            val_str = ', '.join(['{}: {}'.format(k,valid_logs[k]) for k in valid_logs.keys()])
+            logger.info('Train logs --- ' + train_str)
+            logger.info('Val logs --- ' + val_str)
+
 
         # save model
         logger.info('saving model...')
