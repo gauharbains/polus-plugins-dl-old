@@ -1,6 +1,1 @@
 # Polus Plugins - Deep Learning
-
-
-
-
-

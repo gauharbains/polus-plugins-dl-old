@@ -1,8 +1,9 @@
 # Polus Cell Nuclei Segmentation Plugin
 
-WIPP Plugin Title : Cell Nuclei Segmentation
+This WIPP plugin consists of pre-trained neural networks to segment cell nuclei. The user can choose which neural network to use from a drop down menu. At present it consists of 2 neural networks listed above. Both the networks are very different to each other in terms of speed and accuracy. Taking an example of an image of size 1024 x 1024, the unet takes under 30 sec per image whereas the topcoders network takes around an hour per image but topcoders network has a far beter output.
 
-# Background 
+For more information on WIPP, visit the [official WIPP page](https://isg.nist.gov/deepzoomweb/software/wipp).
+For more information on Bioformats, vist the [official page](https://www.openmicroscopy.org/bio-formats/).
 
 ## Reference and credits
 The plugin consists of 2 neural networks listed below with the links to their original source code: 
@@ -14,9 +15,6 @@ Link to original codebase : https://github.com/axium/Data-Science-Bowl-2018
 2. topcoders
 This neural network  is the first place finisher at the 2018 Data Science Bowl. 
 Link to the original codebase: https://github.com/selimsef/dsb2018_topcoders/
-
-## Description
-This WIPP plugin consists of pre-trained neural networks to segment cell nuclei. The user can choose which neural network to use from a drop down menu. At present it consists of 2 neural networks listed above. Both the networks are very different to each other in terms of speed and accuracy. Taking an example of an image of size 1024 x 1024, the unet takes under 30 sec per image whereas the topcoders network takes around an hour per image but topcoders network has a far beter output. 
 
 # Need 
 Identifying cell nuclei is the first step in medical research. Owing to the advancements in laboratory automation, researchers have extensive amounts of image data available to them and its not feasible to manually segment nuclei. Due to this, substantial developements have been made to automate the process of nuclei segmentation and people across the globe have come up with creative models to solve this problem.This plugin enable users to exploit the power of artificial intelligence to segment nuclei. At present, it consists of 2 neural network architectures as mentioned above. 
